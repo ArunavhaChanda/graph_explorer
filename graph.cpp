@@ -1,0 +1,164 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+template <class T>
+class graph{
+    map<int, map<int, int>> adj;
+    vector<T> node;
+public:
+    graph(){}
+    graph(int n){
+        node.resize(n);
+    }
+    graph(initializer_list<T> inp){
+        node = vector<T>(inp.begin(), inp.end());
+    }
+
+    void add_node(T &t){
+        node.push_back(t);
+    }
+
+    void add_edge(int src, int target, int weight){
+        assert(target < node.size() && src < node.size());
+        adj[src][target] = weight;
+    }
+
+    T& operator[](int i){
+        assert(i < node.size());
+        return node[i];
+    }
+
+    const vector<T> &nodes(){
+        return node;
+    }
+
+    const map<int, map<int, int>> &edges(){
+        return adj;
+    }
+
+    size_t size(){
+        return node.size();
+    }
+};
+
+template <class T>
+int max_flow(graph<T> &g, int src, int target){
+    assert(src < g.nodes().size() && target < g.nodes().size());
+    if(src == target) return INT_MAX;
+
+    // Edmond karp
+    auto adj = g.edges();
+    int max_flow = 0;
+    bool found = true;
+    while(found){
+        found = false;
+        set<int> visited; visited.insert(src);
+        queue<int> que; que.push(src);
+        map<int, int> parent;
+        while(!que.empty()){
+            auto cur = que.front(); que.pop();
+            for(auto &p : adj[cur]){
+                int i = p.first;
+                if(visited.count(i) || p.second == 0) continue;
+                parent[i] = cur;
+                if(i == target){
+                    found = true;
+                    break;
+                }
+                que.push(i); visited.insert(i);
+            }
+            if(found) break;
+        }
+
+        if(found){
+            auto iter = target;
+            int flow = INT_MAX;
+            while(iter != src){
+                flow = min(flow, adj[parent[iter]][iter]);
+                iter = parent[iter];
+            }
+            max_flow += flow;
+            iter = target;
+            while(iter != src){
+                adj[parent[iter]][iter] -= flow;
+                adj[iter][parent[iter]] += flow;
+                iter = parent[iter];
+            }
+        }
+    }
+
+    return max_flow;
+}
+
+// TODO: Make this work
+// template <class T>
+// bool get_topological_order(graph<T> &g, vector<T> &res){
+//     vector<int> order;
+//     int n = g.size();
+//     set<int> visited;
+//     stack<int, pair<map<int, int>::iterator, map<int, int>::iterator>> stk;
+//     for(int i=0;i<n;i++){
+//         if(visited.count(i)) continue;
+//         stk.push({i, {adj[i].begin(), adj[i].end()}});
+//         while(!stk.empty()){
+//             auto cur = stk.top(); stk.pop();
+//             if(cur.second.first == cur.second.second) order.push_back(cur.first);
+//             else{
+//                 auto it = cur.second.first.first;
+//                 ++cur.second.first;
+//                 stk.push({cur.first,{cur.second.first, cur.second.second}});
+//                 stk.push({it, adj[it].begin(), adj[it].end()});    
+//             }
+//         }
+//     }
+
+//     for(int i : order) res.push_back(g[i]);
+//     return true;
+// }
+
+int main(){
+    graph<string> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
+    
+    vector<vector<int>> edges2{{0,1,10},{2,1,12},{3,0,11},{0,3,43}};
+    for(auto &i : g3.nodes()) cout << i << ','; cout << '\n';
+    for(auto &edge : edges2) g3.add_edge(edge[0], edge[1], edge[2]);
+    for(auto &i : g3.edges()){
+           for(auto &p : i.second){
+               cout << g3[i.first] << "->" << g3[p.first] << ':' << p.second << '\n';
+           }
+    }
+
+
+    int n = 10;
+    graph<int> g(n); 
+    for(int i=0;i<n;i++) g[i] = i; // assigning values to vertices.
+
+    vector<vector<int>> edges{{0,1,2},{1,2,3},{2,3,1}};
+
+    // Signature: g.add_edge(src_vertex_index, target_vertex_index, weight);
+    for(auto &edge : edges) g.add_edge(edge[0], edge[1], edge[2]);
+    cout << "Max flow between vertex 0 and 2 is " << max_flow(g, 0, 2) << '\n';
+
+    // another type of graph
+    graph<string> g2; // an empty graph.
+
+
+// adding nodes.
+    vector<string> node_values{"newyork"s, "seattle"s, "boston"s};
+    for(string &s : node_values) g2.add_node(s);
+
+    g2.add_edge(0, 1, 5); 
+    cout << g2[1] << '\n'; // prints "seattle" (without the quotes)
+
+    // Get topological order, appends the order to passed list (using push_back).
+    // vector<string> topological_order;
+    // if(get_topological_order(g2, topological_order)){
+    //     cout << "topological order exists" << '\n';
+    //     for(string &s : topological_order) cout << s << ' ';
+    //     cout << '\n';
+    // }else{
+    //     cout << "topological order does not exist" << '\n';
+    // }
+
+    return 0;
+}
