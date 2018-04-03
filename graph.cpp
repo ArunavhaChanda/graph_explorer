@@ -24,7 +24,7 @@ public:
         node = vector<T>(inp.begin(), inp.end());
     }
 
-    void add_node(T &t){
+    void push_back(T &t){
         node.push_back(t);
     }
 
@@ -38,11 +38,16 @@ public:
         return node[i];
     }
 
-    const vector<T> &nodes(){
+    const T& operator[](int i) const{
+        assert(i < node.size());
+        return node[i];   
+    }
+
+    const vector<T> &nodes() const{
         return node;
     }
 
-    const map<int, map<int, int>> &edges(){
+    const map<int, map<int, int>> &edges() const{
         return adj;
     }
 
@@ -165,7 +170,7 @@ int main(){
 
 // adding nodes.
     vector<string> node_values{"newyork"s, "seattle"s, "boston"s, "miami"s};
-    for(string &s : node_values) g2.add_node(s);
+    for(string &s : node_values) g2.push_back(s);
 
     for(auto &edge : edges) g2.add_edge(edge[0], edge[1], edge[2]);
     cout << g2[1] << '\n'; // prints "seattle" (without the quotes)
