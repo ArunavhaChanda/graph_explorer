@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+// #include <optional>
 using namespace std;
 
 template <class T>
@@ -18,7 +19,7 @@ public:
         node.push_back(t);
     }
 
-    void add_edge(int src, int target, int weight){
+    void add_edge(int src, int target, int weight = 1){
         assert(target < node.size() && src < node.size());
         adj[src][target] = weight;
     }
@@ -90,31 +91,41 @@ int max_flow(graph<T> &g, int src, int target){
     return max_flow;
 }
 
-// TODO: Make this work
-// template <class T>
-// bool get_topological_order(graph<T> &g, vector<T> &res){
-//     vector<int> order;
-//     int n = g.size();
-//     set<int> visited;
-//     stack<int, pair<map<int, int>::iterator, map<int, int>::iterator>> stk;
-//     for(int i=0;i<n;i++){
-//         if(visited.count(i)) continue;
-//         stk.push({i, {adj[i].begin(), adj[i].end()}});
-//         while(!stk.empty()){
-//             auto cur = stk.top(); stk.pop();
-//             if(cur.second.first == cur.second.second) order.push_back(cur.first);
-//             else{
-//                 auto it = cur.second.first.first;
-//                 ++cur.second.first;
-//                 stk.push({cur.first,{cur.second.first, cur.second.second}});
-//                 stk.push({it, adj[it].begin(), adj[it].end()});    
-//             }
-//         }
-//     }
+template <class T>
+optional<vector<int>> get_topological_order(graph<T> &g){
+    vector<int> order;
+    int n = g.size();
+    auto adj = g.edges();
+    set<int> visited, visiting;
+    stack<pair<int, pair<map<int, int>::iterator, map<int, int>::iterator>>> stk;
+    for(int i=0;i<n;i++){
+        if(visited.count(i)) continue;
 
-//     for(int i : order) res.push_back(g[i]);
-//     return true;
-// }
+        stk.push({i, {adj[i].begin(), adj[i].end()}});
+        visiting.insert(i);
+        while(!stk.empty()){
+            auto cur = stk.top(); stk.pop();
+            if(cur.second.first == cur.second.second){
+                visiting.erase(cur.first);
+                visited.insert(cur.first);
+                order.push_back(cur.first);
+            }
+            else{
+                pair<int, int> it = *(cur.second.first);
+                ++cur.second.first;
+                stk.push({cur.first,{cur.second.first, cur.second.second}});
+
+                if(visiting.count(it.first)) return nullopt;
+                if(visited.count(it.first)) continue;
+                visiting.insert(it.first);
+                stk.push({it.first, {adj[it.first].begin(), adj[it.first].end()}});    
+            }
+        }
+    }
+
+    reverse(order.begin(), order.end());
+    return order;
+}
 
 int main(){
     graph<string> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
@@ -133,7 +144,7 @@ int main(){
     graph<int> g(n); 
     for(int i=0;i<n;i++) g[i] = i; // assigning values to vertices.
 
-    vector<vector<int>> edges{{0,1,2},{1,2,3},{2,3,1}};
+    vector<vector<int>> edges{{0,1,2},{1,2,3},{0,2,10},{2,3,1}};
 
     // Signature: g.add_edge(src_vertex_index, target_vertex_index, weight);
     for(auto &edge : edges) g.add_edge(edge[0], edge[1], edge[2]);
@@ -144,21 +155,31 @@ int main(){
 
 
 // adding nodes.
-    vector<string> node_values{"newyork"s, "seattle"s, "boston"s};
+    vector<string> node_values{"newyork"s, "seattle"s, "boston"s, "miami"s};
     for(string &s : node_values) g2.add_node(s);
 
-    g2.add_edge(0, 1, 5); 
+    for(auto &edge : edges) g2.add_edge(edge[0], edge[1], edge[2]);
     cout << g2[1] << '\n'; // prints "seattle" (without the quotes)
 
     // Get topological order, appends the order to passed list (using push_back).
-    // vector<string> topological_order;
-    // if(get_topological_order(g2, topological_order)){
-    //     cout << "topological order exists" << '\n';
-    //     for(string &s : topological_order) cout << s << ' ';
-    //     cout << '\n';
-    // }else{
-    //     cout << "topological order does not exist" << '\n';
-    // }
+    
+    if(auto topological_order = get_topological_order(g2)){
+        cout << "topological order exists" << '\n';
+        for(auto &s : *topological_order) cout << s << ' ';
+        cout << '\n';
+    }else{
+        cout << "topological order does not exist" << '\n';
+    }
+
+    g2.add_edge(3,0,1);
+
+    if(auto topological_order = get_topological_order(g2)){
+        cout << "topological order exists" << '\n';
+        for(auto &s : *topological_order) cout << s << ' ';
+        cout << '\n';
+    }else{
+        cout << "topological order does not exist" << '\n';
+    }
 
     return 0;
 }
