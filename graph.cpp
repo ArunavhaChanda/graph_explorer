@@ -8,11 +8,13 @@
 #include <stack>
 #include <climits>
 #include <queue>
+#include <set>
 
 using namespace std;
 
 template <class T>
 class graph{
+    // Think about doing map<pair<int, int>, int> adj;
     map<int, map<int, int>> adj;
     vector<T> node;
 public:
@@ -24,13 +26,22 @@ public:
         node = vector<T>(inp.begin(), inp.end());
     }
 
-    void push_back(T &t){
+    int push_back(T &t){
+        int res = node.size();
         node.push_back(t);
+        return res;
     }
 
     void add_edge(int src, int target, int weight = 1){
         assert(target < node.size() && src < node.size());
         adj[src][target] = weight;
+    }
+
+    void erase_edge(int src, int target){
+        assert(target < node.size() && src < node.size());
+        if(adj.find(src) != adj.end()){
+            adj[src].erase(target);
+        }
     }
 
     T& operator[](int i){
