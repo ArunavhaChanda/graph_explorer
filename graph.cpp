@@ -93,9 +93,14 @@ public:
         return vertex<T>(node[i], upd,adj[i]);
     }
 
-    const T& operator[](int i) const{
-        assert(i < node.size());
-        return node[i];   
+    optional<int> get_node(T& val){
+        auto it = lookup.find(val);
+        if(it == lookup.end()) return nullopt;
+        return it->second;
+    }
+
+    int count(T& val){
+        return lookup.count(val);
     }
 
     const vector<T> &nodes() const{
