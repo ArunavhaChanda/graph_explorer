@@ -9,21 +9,53 @@
 #include <climits>
 #include <queue>
 #include <set>
+#include <functional>
 
 using namespace std;
+template <class T>
+class vertex{
+    map<int, int> &adj;
+    const function<void(const T&,const T&)> update;
+    T& _val;
+public:
+    const T& val;
+    vertex(T& rval, function<void(const T&,const T&)> u, map<int, int> &radj):adj{radj}, update{u}, val{rval}, _val{rval}{}
+    void operator =(const T& newval){
+        update(val, newval);
+        _val = newval;
+    }
+
+    map<int,int>::iterator begin(){
+        return adj.begin();
+    }
+
+    map<int,int>::iterator end(){
+        return adj.end();
+    }
+
+    const int& operator[](int i) const{
+        return adj[i];
+    }
+};
 
 template <class T>
 class graph{
     // Think about doing map<pair<int, int>, int> adj;
     map<int, map<int, int>> adj;
     vector<T> node;
+    map<T, int> lookup;
 public:
     graph(){}
     graph(int n){
         node.resize(n);
     }
     graph(initializer_list<T> inp){
-        node = vector<T>(inp.begin(), inp.end());
+        for(auto it=inp.begin();it!=inp.end();it++){
+            if(lookup.find(*it) == lookup.end()){
+                lookup[*it] = node.size();
+                node.push_back(*it);
+            }
+        }
     }
 
     int push_back(T &t){
@@ -44,9 +76,21 @@ public:
         }
     }
 
-    T& operator[](int i){
+    // T& operator[](int i){
+        // assert(i < node.size());
+    //     return node[i];
+    // }
+
+    // TODO: Handle cases where newval already exists in the lookup dictionary..
+    vertex<T> operator[](int i){
         assert(i < node.size());
-        return node[i];
+        auto upd = [&](const T& oldval, const T& newval){
+            cout << "Updating value: " << oldval << ' ' << newval << endl;
+            lookup.erase(oldval);
+            lookup[newval] = i;
+        };
+
+        return vertex<T>(node[i], upd,adj[i]);
     }
 
     const T& operator[](int i) const{
@@ -154,16 +198,23 @@ optional<vector<int>> get_topological_order(graph<T> &g){
 
 int main(){
     graph<string> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
+
+    auto v = g3[0];
+    v = "new Yoork";
+    cout << g3[0].val << endl;
+    cout << v.val << endl;
+
     
     vector<vector<int>> edges2{{0,1,10},{2,1,12},{3,0,11},{0,3,43}};
     for(auto &i : g3.nodes()) cout << i << ','; cout << '\n';
     for(auto &edge : edges2) g3.add_edge(edge[0], edge[1], edge[2]);
     for(auto &i : g3.edges()){
            for(auto &p : i.second){
-               cout << g3[i.first] << "->" << g3[p.first] << ':' << p.second << '\n';
+               cout << g3[i.first].val << "->" << g3[p.first].val << ':' << p.second << '\n';
            }
     }
 
+    for(auto &p : g3[0]) cout << g3[p.first].val << ' ' << p.second << endl;
 
     int n = 10;
     graph<int> g(n); 
@@ -184,7 +235,7 @@ int main(){
     for(string &s : node_values) g2.push_back(s);
 
     for(auto &edge : edges) g2.add_edge(edge[0], edge[1], edge[2]);
-    cout << g2[1] << '\n'; // prints "seattle" (without the quotes)
+    cout << g2[1].val << '\n'; // prints "seattle" (without the quotes)
 
     // Get topological order, appends the order to passed list (using push_back).
     
