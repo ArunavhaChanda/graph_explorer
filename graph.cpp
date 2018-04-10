@@ -1,3 +1,5 @@
+//Representing a graph with adjacency list using vector
+
 #include <vector>
 #include <optional>
 #include <algorithm>
@@ -12,6 +14,21 @@
 #include <functional>
 
 using namespace std;
+
+// Based off of the known SFINAE test
+// inspired by code from here: https://ideone.com/pldMrr
+namespace lessthan
+{
+  struct not_exisiting {}; 
+  template<typename T, typename Arg> not_exisiting operator< (const T&, const Arg&);
+
+  template<typename T, typename Arg = T>
+  struct EqualExists
+  {
+    enum { value = !std::is_same<decltype(*(T*)(0) < *(Arg*)(0)), not_exisiting>::value };
+  };  
+}
+
 template <class T>
 class vertex{
     map<int, int> &adj;
@@ -262,5 +279,7 @@ int main(){
         cout << "topological order does not exist" << '\n';
     }
 
+    //use for test of less than operator
+    cout << "String has < operator? " << lessthan::EqualExists<string>::value << endl;
     return 0;
 }
