@@ -61,24 +61,42 @@ class graph{
     map<int, map<int, int>> adj;
     vector<T> node;
     map<T, int> lookup;
+    bool comparable;
 public:
-    graph(){}
+    graph(){ check_comparability(); }
+
     graph(int n){
         node.resize(n);
+        check_comparability();
     }
+
     graph(initializer_list<T> inp){
-        for(auto it=inp.begin();it!=inp.end();it++){
-            if(lookup.find(*it) == lookup.end()){
-                lookup[*it] = node.size();
-                node.push_back(*it);
+        check_comparability();
+        if (comparable){
+            for(auto it=inp.begin();it!=inp.end();it++){
+                if(lookup.find(*it) == lookup.end()){
+                    lookup[*it] = node.size();
+                    node.push_back(*it);
+                }
             }
         }
+        else{
+            for(auto it=inp.begin();it!=inp.end();it++){
+                node.push_back(*it);
+                
+            }
+        }
+
+    }
+
+    void check_comparability(){
+        if (lessthan::EqualExists<T>::value) { comparable = true; }
+        else { comparable = false; }
     }
 
     int push_back(T &t){
-        int res = node.size();
         node.push_back(t);
-        return res;
+        return node.size() - 1;
     }
 
     void add_edge(int src, int target, int weight = 1){
@@ -103,20 +121,34 @@ public:
         assert(i < node.size());
         auto upd = [&](const T& oldval, const T& newval){
             cout << "Updating value: " << oldval << ' ' << newval << endl;
-            lookup.erase(oldval);
-            lookup[newval] = i;
+            //TODO: from Ori- make sure this is correct, I wasn't sure exactly
+            if (comparable){
+                lookup.erase(oldval);
+                lookup[newval] = i;
+            }
         };
 
         return vertex<T>(node[i], upd,adj[i]);
     }
 
     optional<int> get_node(T& val){
+        if (comparable){
+            ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
+            if (pos < node.size()) return nullopt;
+            return pos;
+        }
         auto it = lookup.find(val);
         if(it == lookup.end()) return nullopt;
         return it->second;
     }
 
-    int count(T& val){
+    int contained(T& val){
+        if (comparable){
+            if(find(node.begin(), node.end(), val) != node.end()) {
+                return 1;
+            }
+            return 0;
+        }
         return lookup.count(val);
     }
 
@@ -279,7 +311,5 @@ int main(){
         cout << "topological order does not exist" << '\n';
     }
 
-    //use for test of less than operator
-    cout << "String has < operator? " << lessthan::EqualExists<string>::value << endl;
     return 0;
 }
