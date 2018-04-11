@@ -82,11 +82,11 @@ public:
         }
         else{
             for(auto it=inp.begin();it!=inp.end();it++){
-                node.push_back(*it);
-                
+                if(find(node.begin(), node.end(), *it) == node.end()){
+                    node.push_back(*it);
+                }
             }
         }
-
     }
 
     void check_comparability(){
@@ -127,14 +127,13 @@ public:
                 lookup[newval] = i;
             }
         };
-
         return vertex<T>(node[i], upd,adj[i]);
     }
 
     optional<int> get_node(T& val){
-        if (comparable){
+        if (!comparable){
             ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
-            if (pos < node.size()) return nullopt;
+            if (pos >= node.size()) return nullopt;
             return pos;
         }
         auto it = lookup.find(val);
@@ -142,8 +141,8 @@ public:
         return it->second;
     }
 
-    int contained(T& val){
-        if (comparable){
+    int count(T& val){
+        if (!comparable){
             if(find(node.begin(), node.end(), val) != node.end()) {
                 return 1;
             }
