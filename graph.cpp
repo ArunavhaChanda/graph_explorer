@@ -15,25 +15,19 @@
 
 using namespace std;
 
-// Based off of the known SFINAE test
-// inspired by code from here: https://ideone.com/pldMrr
-namespace lessthan
-{
-  struct not_exisiting {}; 
-  template<typename T, typename Arg> not_exisiting operator< (const T&, const Arg&);
+//concept definition for less than operator support
+template<typename T>
+concept bool LessThanComparable = requires(T a, T b) {
+    { a < b } -> bool;
+};
 
-  template<typename T, typename Arg = T>
-  struct EqualExists
-  {
-    enum { value = !std::is_same<decltype(*(T*)(0) < *(Arg*)(0)), not_exisiting>::value };
-  };  
-}
-
+//definition of vertex class to be used within graph
 template <class T>
 class vertex{
     map<int, int> &adj;
     const function<void(const T&,const T&)> update;
     T& _val;
+
 public:
     const T& val;
     vertex(T& rval, function<void(const T&,const T&)> u, map<int, int> &radj):adj{radj}, update{u}, val{rval}, _val{rval}{}
@@ -55,43 +49,25 @@ public:
     }
 };
 
+//general graph implementation for T that does not support < operator
 template <class T>
 class graph{
-    // Think about doing map<pair<int, int>, int> adj;
     map<int, map<int, int>> adj;
     vector<T> node;
-    map<T, int> lookup;
-    bool comparable;
+
 public:
-    graph(){ check_comparability(); }
+    graph(){}
 
     graph(int n){
         node.resize(n);
-        check_comparability();
     }
 
     graph(initializer_list<T> inp){
-        check_comparability();
-        if (comparable){
-            for(auto it=inp.begin();it!=inp.end();it++){
-                if(lookup.find(*it) == lookup.end()){
-                    lookup[*it] = node.size();
-                    node.push_back(*it);
-                }
+        for(auto it=inp.begin();it!=inp.end();it++){
+            if(find(node.begin(), node.end(), *it) == node.end()){
+                node.push_back(*it);
             }
         }
-        else{
-            for(auto it=inp.begin();it!=inp.end();it++){
-                if(find(node.begin(), node.end(), *it) == node.end()){
-                    node.push_back(*it);
-                }
-            }
-        }
-    }
-
-    void check_comparability(){
-        if (lessthan::EqualExists<T>::value) { comparable = true; }
-        else { comparable = false; }
     }
 
     int push_back(T &t){
@@ -111,43 +87,95 @@ public:
         }
     }
 
-    // T& operator[](int i){
-        // assert(i < node.size());
-    //     return node[i];
-    // }
-
-    // TODO: Handle cases where newval already exists in the lookup dictionary..
     vertex<T> operator[](int i){
         assert(i < node.size());
         auto upd = [&](const T& oldval, const T& newval){
             cout << "Updating value: " << oldval << ' ' << newval << endl;
-            //TODO: from Ori- make sure this is correct, I wasn't sure exactly
-            if (comparable){
-                lookup.erase(oldval);
-                lookup[newval] = i;
-            }
         };
         return vertex<T>(node[i], upd,adj[i]);
     }
 
     optional<int> get_node(T& val){
-        if (!comparable){
-            ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
-            if (pos >= node.size()) return nullopt;
-            return pos;
+        ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
+        if (pos >= node.size()) return nullopt;
+        return pos;
+    }
+
+    int count(T& val){
+        if(find(node.begin(), node.end(), val) != node.end()) {return 1;}
+        return 0;
+    }
+
+    const vector<T> &nodes() const{
+        return node;
+    }
+
+    const map<int, map<int, int>> &edges() const{
+        return adj;
+    }
+
+    size_t size(){
+        return node.size();
+    }
+};
+
+//graph class specialization for a T that supports < operator
+template <LessThanComparable T>
+class graph<T>{
+    map<int, map<int, int>> adj;
+    vector<T> node;
+    map<T, int> lookup;
+
+public:
+    graph(){}
+
+    graph(int n){
+        node.resize(n);
+    }
+
+    graph(initializer_list<T> inp){
+        for(auto it=inp.begin();it!=inp.end();it++){
+            if(lookup.find(*it) == lookup.end()){
+                lookup[*it] = node.size();
+                node.push_back(*it);
+            }
         }
+    }
+
+    int push_back(T &t){
+        node.push_back(t);
+        return node.size() - 1;
+    }
+
+    void add_edge(int src, int target, int weight = 1){
+        assert(target < node.size() && src < node.size());
+        adj[src][target] = weight;
+    }
+
+    void erase_edge(int src, int target){
+        assert(target < node.size() && src < node.size());
+        if(adj.find(src) != adj.end()){
+            adj[src].erase(target);
+        }
+    }
+
+    vertex<T> operator[](int i){
+        assert(i < node.size());
+        auto upd = [&](const T& oldval, const T& newval){
+            cout << "Updating value: " << oldval << ' ' << newval << endl;
+            lookup.erase(oldval);
+            lookup[newval] = i;
+        };
+        return vertex<T>(node[i], upd,adj[i]);
+    }
+
+    optional<int> get_node(T& val){
         auto it = lookup.find(val);
         if(it == lookup.end()) return nullopt;
         return it->second;
     }
 
     int count(T& val){
-        if (!comparable){
-            if(find(node.begin(), node.end(), val) != node.end()) {
-                return 1;
-            }
-            return 0;
-        }
         return lookup.count(val);
     }
 
@@ -163,6 +191,7 @@ public:
         return node.size();
     }
 };
+
 
 template <class T>
 int max_flow(graph<T> &g, int src, int target){
