@@ -3,4 +3,4 @@ Use `-std=c++17` flag while compiling since optional datatype is only supported 
 Use -fconcepts flag while compilin since concepts are in use as well
 
 to compile using gcc:
-g++ -std=c++17 -fconcepts graph.cpp
+g++ -std=c++17 -fconcepts tests.cpp
