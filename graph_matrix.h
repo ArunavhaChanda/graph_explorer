@@ -11,6 +11,7 @@
 #include <climits>
 #include <functional>
 
+namespace graphmatrix{
 using namespace std;
 
 //definition of vertex class to be used within graph
@@ -204,3 +205,4 @@ public:
         return unordered_graph_base<T>::get_vertex(i, upd);
     }
 };
+}

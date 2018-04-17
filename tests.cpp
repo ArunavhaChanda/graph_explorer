@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
+using namespace graphlist;
 
 struct node{
     int a;

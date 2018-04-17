@@ -6,7 +6,7 @@
 #include <stack>
 #include <queue>
 
-using namespace std;
+using namespace graphlist;
 
 template <class T>
 int max_flow(unordered_graph_base<T> &g, int src, int target){
@@ -61,11 +61,46 @@ int max_flow(unordered_graph_base<T> &g, int src, int target){
 }
 
 template <class T>
-optional<vector<int>> get_topological_order(unordered_graph_base<T> &g){
+optional<vector<int>> get_topological_order(graphmatrix::unordered_graph_base<T> &g){
     vector<int> order;
     int n = g.size();
     set<int> visited, visiting;
     stack<pair<int, pair<map<int, int>::iterator, map<int, int>::iterator>>> stk;
+    for(int i=0;i<n;i++){
+        if(visited.count(i)) continue;
+
+        stk.push({i, {g[i].begin(), g[i].end()}});
+        visiting.insert(i);
+        while(!stk.empty()){
+            auto cur = stk.top(); stk.pop();
+            if(cur.second.first == cur.second.second){
+                visiting.erase(cur.first);
+                visited.insert(cur.first);
+                order.push_back(cur.first);
+            }
+            else{
+                pair<int, int> it = *(cur.second.first);
+                ++cur.second.first;
+                stk.push({cur.first,{cur.second.first, cur.second.second}});
+
+                if(visiting.count(it.first)) return nullopt;
+                if(visited.count(it.first)) continue;
+                visiting.insert(it.first);
+                stk.push({it.first, {g[it.first].begin(), g[it.first].end()}});    
+            }
+        }
+    }
+
+    reverse(order.begin(), order.end());
+    return order;
+}
+
+template <class T>
+optional<vector<int>> get_topological_order(graphlist::unordered_graph_base<T> &g){
+    vector<int> order;
+    int n = g.size();
+    set<int> visited, visiting;
+    stack<pair<int, pair<list<pair<int, int>>::iterator, list<pair<int, int>>::iterator>>> stk;
     for(int i=0;i<n;i++){
         if(visited.count(i)) continue;
 
