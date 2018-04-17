@@ -9,12 +9,15 @@
 using namespace std;
 
 template <class T>
-int max_flow(T &g, int src, int target){
+int max_flow(unordered_graph_base<T> &g, int src, int target){
     assert(src < g.nodes().size() && target < g.nodes().size());
     if(src == target) return INT_MAX;
 
+    // create a temp graph.
+    unordered_graph<T> g2(g.size());
+    for(int i=0;i<g.size();i++) for(auto &p : g[i]) g2.add_edge(i, p.first, p.second);
+
     // Edmond karp
-    auto adj = g.edges();
     int max_flow = 0;
     bool found = true;
     while(found){
@@ -24,7 +27,7 @@ int max_flow(T &g, int src, int target){
         map<int, int> parent;
         while(!que.empty()){
             auto cur = que.front(); que.pop();
-            for(auto &p : adj[cur]){
+            for(auto &p : g2[cur]){
                 int i = p.first;
                 if(visited.count(i) || p.second == 0) continue;
                 parent[i] = cur;
@@ -41,14 +44,14 @@ int max_flow(T &g, int src, int target){
             auto iter = target;
             int flow = INT_MAX;
             while(iter != src){
-                flow = min(flow, adj[parent[iter]][iter]);
+                flow = min(flow, g2[parent[iter]][iter]);
                 iter = parent[iter];
             }
             max_flow += flow;
             iter = target;
             while(iter != src){
-                adj[parent[iter]][iter] -= flow;
-                adj[iter][parent[iter]] += flow;
+                g2[parent[iter]][iter] -= flow;
+                g2[iter][parent[iter]] += flow;
                 iter = parent[iter];
             }
         }
@@ -58,16 +61,15 @@ int max_flow(T &g, int src, int target){
 }
 
 template <class T>
-optional<vector<int>> get_topological_order(T &g){
+optional<vector<int>> get_topological_order(unordered_graph_base<T> &g){
     vector<int> order;
     int n = g.size();
-    auto adj = g.edges();
     set<int> visited, visiting;
     stack<pair<int, pair<map<int, int>::iterator, map<int, int>::iterator>>> stk;
     for(int i=0;i<n;i++){
         if(visited.count(i)) continue;
 
-        stk.push({i, {adj[i].begin(), adj[i].end()}});
+        stk.push({i, {g[i].begin(), g[i].end()}});
         visiting.insert(i);
         while(!stk.empty()){
             auto cur = stk.top(); stk.pop();
@@ -84,7 +86,7 @@ optional<vector<int>> get_topological_order(T &g){
                 if(visiting.count(it.first)) return nullopt;
                 if(visited.count(it.first)) continue;
                 visiting.insert(it.first);
-                stk.push({it.first, {adj[it.first].begin(), adj[it.first].end()}});    
+                stk.push({it.first, {g[it.first].begin(), g[it.first].end()}});    
             }
         }
     }

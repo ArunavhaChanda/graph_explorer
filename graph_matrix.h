@@ -36,21 +36,25 @@ public:
         return adj.end();
     }
 
-    const int& operator[](int i) const{
+    int& operator[](int i) {
         return adj[i];
     }
 };
 
+// Graph that just stores nodes (no equal to or less than operator required for T)
 template <class T>
-class graph_base{
+class unordered_graph_base{
     map<int, map<int, int>> adj;
     vector<T> node;
 protected:
+    unordered_graph_base() { }
+    
+    unordered_graph_base(int n){
+        node.resize(n);
+    }
 
-    int push_back(const T &t){
-        int pos = node.size();
-        node.push_back(t);
-        return pos;
+    unordered_graph_base(const initializer_list<T> &inp){
+        node = vector<T>(inp.begin(), inp.end());
     }
 
     vertex<T> get_vertex(int i, const function<void(const T&, const T&)> upd){
@@ -59,18 +63,15 @@ protected:
     }
 
 public:
-    graph_base(){}
-    
-    graph_base(int n){
-        node.resize(n);
+    unordered_graph_base(const unordered_graph_base<T> &val){
+        node = val.nodes();
+        adj = val.adj;
     }
-
     virtual vertex<T> operator[](int i) = 0;
-    virtual int count(T& val) = 0;
 
-    optional<int> get_node(T& val){
-        ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
-        if (pos == node.size()) return nullopt;
+    int push_back(const T &t){
+        int pos = node.size();
+        node.push_back(t);
         return pos;
     }
 
@@ -81,7 +82,7 @@ public:
 
     void erase_edge(int src, int target){
         assert(target < node.size() && src < node.size());
-        if(adj.find(src) != adj.end()){
+        if(adj.count(src)){
             adj[src].erase(target);
         }
     }
@@ -90,28 +91,44 @@ public:
         return node;
     }
 
-    const map<int, map<int, int>> &edges() const{
-        return adj;
-    }
-
     size_t size(){
         return node.size();
     }
 };
 
+// Graph that stores nodes that support == operator and does not allow duplicates.
+template <EqualityComparable T>
+class graph_base : public unordered_graph_base<T> {
+protected:
+    graph_base(): unordered_graph_base<T>() { }
+    
+    graph_base(int n) : unordered_graph_base<T>(n){ }
+public:
+    virtual int count(T& val) = 0;
+    virtual optional<int> get_index(const T& val) = 0;
+};
+
 //general graph implementation for T that does not support < operator
-template <class T>
+template <EqualityComparable T>
 class graph : public graph_base<T> {
 public:
+
     graph():graph_base<T>() { }
 
     graph(int n):graph_base<T>(n){ }
 
-    graph(initializer_list<T> inp):graph_base<T>(){
+    graph(const initializer_list<T> &inp):graph_base<T>(){
         for(auto &it : inp){
-            if(auto t = get_node(it)) continue;
+            if(auto t = get_index(it)) continue;
             graph_base<T>::push_back(it);
         }
+    }
+
+    optional<int> get_index(const T& val){
+        auto &node = unordered_graph_base<T>::nodes();
+        ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
+        if (pos == node.size()) return nullopt;
+        return pos;
     }
 
     int push_back(T &t){
@@ -119,14 +136,12 @@ public:
     }
 
     vertex<T> operator[](int i){
-        auto upd = [&](const T& oldval, const T& newval){
-            cout << "Updating value: " << oldval << ' ' << newval << endl;
-        };
+        auto upd = [&](const T& oldval, const T& newval){ };
         return graph_base<T>::get_vertex(i, upd);
     }
 
     int count(T& val){
-        if(auto t = get_node(val)) return 1;
+        if(auto t = get_index(val)) return 1;
         return 0;
     }
 };
@@ -143,7 +158,7 @@ public:
 
     graph(int n):graph_base<T>(n){ }
 
-    graph(initializer_list<T> inp):graph_base<T>(){
+    graph(const initializer_list<T> &inp):graph_base<T>(){
         for(auto &it : inp){
             if(lookup.count(it)) continue;
             lookup[it] = graph_base<T>::push_back(it);
@@ -156,15 +171,16 @@ public:
     }
 
     vertex<T> operator[](int i){
-        auto upd = [&](const T& oldval, const T& newval){
-            cout << "Updating value: " << oldval << ' ' << newval << endl;
+        auto &lookup = this->lookup;
+        auto upd = [i, &lookup](const T& oldval, const T& newval){
+            cout << "Updating value: " << oldval << ' ' << newval << ' ' << i << endl;
             lookup.erase(oldval);
             lookup[newval] = i;
         };
         return graph_base<T>::get_vertex(i, upd);
     }
 
-    optional<int> get_node(T& val){
+    optional<int> get_index(const T& val){
         auto it = lookup.find(val);
         if(it == lookup.end()) return nullopt;
         return it->second;
@@ -172,5 +188,19 @@ public:
 
     int count(T& val){
         return lookup.count(val);
+    }
+};
+
+template <class T>
+class unordered_graph : public unordered_graph_base<T> {
+public:
+    unordered_graph():unordered_graph_base<T>() { }
+    unordered_graph(int n):unordered_graph_base<T>(n) { }
+    unordered_graph(const initializer_list<T> &inp):unordered_graph_base<T>(inp) { }
+    unordered_graph(const unordered_graph &val):unordered_graph_base<T>(val) { }
+    unordered_graph(const unordered_graph &&val):unordered_graph_base<T>(val) { *val = nullptr; }
+    vertex<T> operator[](int i){
+        auto upd = [](const T& oldval, const T& newval){ };
+        return unordered_graph_base<T>::get_vertex(i, upd);
     }
 };

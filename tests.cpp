@@ -9,11 +9,30 @@
 
 using namespace std;
 
+struct node{
+    int a;
+    double b;
+    node():a(0),b(1.0){}
+    // friend bool operator==(const node &l, const node &r){
+    //     return l.a == r.a;
+    // }
+};
+
 int main(){
+    unordered_graph<node> g12;
+    graph<int> g13;
     graph<string> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
+    
+    if(auto t = g3.get_index("New York")) cout << "index of New York: " << *t << endl;
+    else cout << "New York not found" << endl;
 
     auto v = g3[0];
     v = "new Yoork";
+    if(auto t = g3.get_index("New York")) cout << "index of New York: " << *t << endl;
+    else cout << "New York not found" << endl;
+    if(auto t = g3.get_index("new Yoork")) cout << "index of new Yoork: " << *t << endl;
+    else cout << "new Yoork not found" << endl;
+
     cout << g3[0].val << endl;
     cout << v.val << endl;
 
@@ -21,10 +40,11 @@ int main(){
     vector<vector<int>> edges2{{0,1,10},{2,1,12},{3,0,11},{0,3,43}};
     for(auto &i : g3.nodes()) cout << i << ','; cout << '\n';
     for(auto &edge : edges2) g3.add_edge(edge[0], edge[1], edge[2]);
-    for(auto &i : g3.edges()){
-           for(auto &p : i.second){
-               cout << g3[i.first].val << "->" << g3[p.first].val << ':' << p.second << '\n';
-           }
+
+    for(int i=0;i<g3.size();i++){
+        for(auto &p : g3[i]){
+            cout << g3[i].val << "->" << g3[p.first].val << ':' << p.second << '\n';
+        }
     }
 
     for(auto &p : g3[0]) cout << g3[p.first].val << ' ' << p.second << endl;
