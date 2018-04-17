@@ -10,7 +10,7 @@
 using namespace std;
 
 int main(){
-    mgraph<string> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
+    graph<string> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
 
     auto v = g3[0];
     v = "new Yoork";
@@ -30,7 +30,7 @@ int main(){
     for(auto &p : g3[0]) cout << g3[p.first].val << ' ' << p.second << endl;
 
     int n = 10;
-    mgraph<int> g(n); 
+    graph<int> g(n); 
     for(int i=0;i<n;i++) g[i] = i; // assigning values to vertices.
 
     vector<vector<int>> edges{{0,1,2},{1,2,3},{0,2,10},{2,3,1}};
@@ -40,7 +40,7 @@ int main(){
     cout << "Max flow between vertex 0 and 2 is " << max_flow(g, 0, 2) << '\n';
 
     // another type of graph
-    mgraph<string> g2; // an empty graph.
+    graph<string> g2; // an empty graph.
 
 
     // adding nodes.

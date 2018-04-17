@@ -41,30 +41,37 @@ public:
     }
 };
 
-//general graph implementation for T that does not support < operator
 template <class T>
-class mgraph{
+class graph_base{
     map<int, map<int, int>> adj;
     vector<T> node;
+protected:
+
+    int push_back(const T &t){
+        int pos = node.size();
+        node.push_back(t);
+        return pos;
+    }
+
+    vertex<T> get_vertex(int i, const function<void(const T&, const T&)> upd){
+        assert(i < node.size());
+        return vertex<T>(node[i], upd, adj[i]);
+    }
 
 public:
-    mgraph(){}
-
-    mgraph(int n){
+    graph_base(){}
+    
+    graph_base(int n){
         node.resize(n);
     }
 
-    mgraph(initializer_list<T> inp){
-        for(auto it=inp.begin();it!=inp.end();it++){
-            if(find(node.begin(), node.end(), *it) == node.end()){
-                node.push_back(*it);
-            }
-        }
-    }
+    virtual vertex<T> operator[](int i) = 0;
+    virtual int count(T& val) = 0;
 
-    int push_back(T &t){
-        node.push_back(t);
-        return node.size() - 1;
+    optional<int> get_node(T& val){
+        ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
+        if (pos == node.size()) return nullopt;
+        return pos;
     }
 
     void add_edge(int src, int target, int weight = 1){
@@ -77,25 +84,6 @@ public:
         if(adj.find(src) != adj.end()){
             adj[src].erase(target);
         }
-    }
-
-    vertex<T> operator[](int i){
-        assert(i < node.size());
-        auto upd = [&](const T& oldval, const T& newval){
-            cout << "Updating value: " << oldval << ' ' << newval << endl;
-        };
-        return vertex<T>(node[i], upd,adj[i]);
-    }
-
-    optional<int> get_node(T& val){
-        ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
-        if (pos >= node.size()) return nullopt;
-        return pos;
-    }
-
-    int count(T& val){
-        if(find(node.begin(), node.end(), val) != node.end()) {return 1;}
-        return 0;
     }
 
     const vector<T> &nodes() const{
@@ -111,54 +99,69 @@ public:
     }
 };
 
+//general graph implementation for T that does not support < operator
+template <class T>
+class graph : public graph_base<T> {
+public:
+    graph():graph_base<T>() { }
+
+    graph(int n):graph_base<T>(n){ }
+
+    graph(initializer_list<T> inp):graph_base<T>(){
+        for(auto &it : inp){
+            if(auto t = get_node(it)) continue;
+            graph_base<T>::push_back(it);
+        }
+    }
+
+    int push_back(T &t){
+        return graph_base<T>::push_back(t);
+    }
+
+    vertex<T> operator[](int i){
+        auto upd = [&](const T& oldval, const T& newval){
+            cout << "Updating value: " << oldval << ' ' << newval << endl;
+        };
+        return graph_base<T>::get_vertex(i, upd);
+    }
+
+    int count(T& val){
+        if(auto t = get_node(val)) return 1;
+        return 0;
+    }
+};
+
 //graph class specialization for a T that supports < operator
 template <LessThanComparable T>
-class mgraph<T>{
+class graph<T> : public graph_base<T> {
     map<int, map<int, int>> adj;
     vector<T> node;
     map<T, int> lookup;
 
 public:
-    mgraph(){}
+    graph():graph_base<T>(){ }
 
-    mgraph(int n){
-        node.resize(n);
-    }
+    graph(int n):graph_base<T>(n){ }
 
-    mgraph(initializer_list<T> inp){
-        for(auto it=inp.begin();it!=inp.end();it++){
-            if(lookup.find(*it) == lookup.end()){
-                lookup[*it] = node.size();
-                node.push_back(*it);
-            }
+    graph(initializer_list<T> inp):graph_base<T>(){
+        for(auto &it : inp){
+            if(lookup.count(it)) continue;
+            lookup[it] = graph_base<T>::push_back(it);
         }
     }
 
     int push_back(T &t){
-        node.push_back(t);
-        return node.size() - 1;
-    }
-
-    void add_edge(int src, int target, int weight = 1){
-        assert(target < node.size() && src < node.size());
-        adj[src][target] = weight;
-    }
-
-    void erase_edge(int src, int target){
-        assert(target < node.size() && src < node.size());
-        if(adj.find(src) != adj.end()){
-            adj[src].erase(target);
-        }
+        if(lookup.count(t) == 0) return graph_base<T>::push_back(t);
+        return lookup[t];
     }
 
     vertex<T> operator[](int i){
-        assert(i < node.size());
         auto upd = [&](const T& oldval, const T& newval){
             cout << "Updating value: " << oldval << ' ' << newval << endl;
             lookup.erase(oldval);
             lookup[newval] = i;
         };
-        return vertex<T>(node[i], upd,adj[i]);
+        return graph_base<T>::get_vertex(i, upd);
     }
 
     optional<int> get_node(T& val){
@@ -169,17 +172,5 @@ public:
 
     int count(T& val){
         return lookup.count(val);
-    }
-
-    const vector<T> &nodes() const{
-        return node;
-    }
-
-    const map<int, map<int, int>> &edges() const{
-        return adj;
-    }
-
-    size_t size(){
-        return node.size();
     }
 };
