@@ -178,7 +178,7 @@ namespace graphlist{
         }
 
         int push_back(T &t){
-            if(lookup.count(t) == 0) return graph_base<T>::push_back(t);
+            if(lookup.count(t) == 0) return lookup[t] = graph_base<T>::push_back(t);
             return lookup[t];
         }
 
