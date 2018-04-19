@@ -73,6 +73,22 @@ int main(){
     vector<string> node_values{"newyork"s, "seattle"s, "boston"s, "miami"s};
     for(string &s : node_values) g2.push_back(s);
 
+    if(auto index = g2.get_index("newyork"))
+        cout << "index of newyork: " << *index << endl;
+    else cout << "newyork not found" << endl;
+
+    if(auto index_1 = g2.get_index("boston"))
+        cout << "index of boston: " << *index_1 <<endl;
+    else cout << "boston not found" << endl;
+
+    if(auto index_2 = g2.get_index("miami"))
+        cout << "index of miami: " << *index_2 <<endl;
+    else cout << "miami not found" << endl;
+
+    if(auto index_3 = g2.get_index("seattle"))
+        cout << "index of seattle: " << *index_3 <<endl;
+    else cout << "seattle not found" << endl;
+
     for(auto &edge : edges) g2.add_edge(edge[0], edge[1], edge[2]);
     cout << g2[1].val << '\n'; // prints "seattle" (without the quotes)
 

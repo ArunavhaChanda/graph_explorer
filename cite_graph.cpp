@@ -14,7 +14,7 @@
 #include "boost/graph/graph_traits.hpp"
 #include "boost/config.hpp"
 
-using namespace graphlist;
+using namespace NMSPC;
 
 typedef std::pair<std::size_t,std::size_t> Pair;
 
