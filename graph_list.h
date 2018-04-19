@@ -12,6 +12,9 @@
 #include <climits>
 #include <functional>
 
+#ifndef GRAPH_LIST
+#define GRAPH_LIST 1
+
 namespace graphlist{
     using namespace std;
     //definition of vertex class to be used within graph
@@ -168,6 +171,7 @@ namespace graphlist{
         graph(int n):graph_base<T>(n){ }
 
         graph(const initializer_list<T> &inp):graph_base<T>(){
+            cout << "graph lsut " << endl;
             for(auto &it : inp){
                 if(lookup.count(it)) continue;
                 lookup[it] = graph_base<T>::push_back(it);
@@ -214,3 +218,5 @@ namespace graphlist{
         }
     };
 }
+
+#endif

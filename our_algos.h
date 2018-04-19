@@ -5,8 +5,9 @@
 #include <optional>
 #include <stack>
 #include <queue>
+#include "our_constants.h"
 
-using namespace graphlist;
+using namespace NMSPC;
 
 template <class T>
 int max_flow(unordered_graph_base<T> &g, int src, int target){
