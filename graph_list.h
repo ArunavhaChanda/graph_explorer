@@ -12,6 +12,9 @@
 #include <climits>
 #include <functional>
 
+#ifndef GRAPH_LIST
+#define GRAPH_LIST 1
+
 namespace graphlist{
     using namespace std;
     //definition of vertex class to be used within graph
@@ -214,3 +217,5 @@ namespace graphlist{
         }
     };
 }
+
+#endif

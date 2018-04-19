@@ -11,6 +11,9 @@
 #include <climits>
 #include <functional>
 
+#ifndef GRAPH_MATRIX
+#define GRAPH_MATRIX 1
+
 namespace graphmatrix{
     using namespace std;
 
@@ -206,3 +209,5 @@ namespace graphmatrix{
         }
     };
 }
+
+#endif

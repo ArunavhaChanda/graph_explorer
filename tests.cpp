@@ -3,11 +3,12 @@
 #include "graph_matrix.h"
 #include "graph_list.h"
 #include "our_algos.h"
+#include "our_constants.h"
 #include <vector>
 #include <string>
 #include <iostream>
 
-using namespace graphlist;
+using namespace NMSPC;
 
 struct node{
     int a;
@@ -32,6 +33,11 @@ int main(){
     else cout << "New York not found" << endl;
     if(auto t = g3.get_index("new Yoork")) cout << "index of new Yoork: " << *t << endl;
     else cout << "new Yoork not found" << endl;
+
+    for(const string &s : {"New York"s, "Chicago"s, "Seattle"s, "Boston"s}){
+        if(auto t = g3.get_index(s)) cout << "index of " << s << ": " << *t << endl;
+        else cout << s << " not found" << endl;        
+    }
 
     cout << g3[0].val << endl;
     cout << v.val << endl;
