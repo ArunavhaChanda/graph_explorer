@@ -63,24 +63,30 @@ int max_flow(unordered_graph_base<T> &g, int src, int target){
 }
 
 template <class T>
-void dfs(int u, graphmatrix::unordered_graph_base<T> &g, vector<int> &order, vector<bool> &visited){
-    visited[u] = true;
+bool dfs(int u, unordered_graph_base<T> &g, vector<int> &order, vector<bool> &visited, vector<bool> &visiting){
+    visiting[u] = true;
     for(auto i : g[u]){
+        if(visiting[i.first]) return false;
         if(visited[i.first]) continue;
-        dfs(i.first, g, order, visited);
+        dfs(i.first, g, order, visited, visiting);
     }
     order.push_back(u);
+    visiting[u] = false;
+    visited[u] = true;
+    return true;
 }
 
 template <class T>
-optional<vector<int>> get_topological_order(graphmatrix::unordered_graph_base<T> &g){
+optional<vector<int>> get_topological_order(unordered_graph_base<T> &g){
     size_t n = g.size();
     vector<int> order;
-    vector<bool> visited(n, false);
+    vector<bool> visited(n, false), visiting(n, false);
     for(int i=0;i<n;i++){
         if(visited[i]) continue;
-        dfs(i, g, order, visited);
+        if(!dfs(i, g, order, visited, visiting)) return nullopt;
     }
+    reverse(order.begin(), order.end());
+    return order;
 }
 
 template <class T>
@@ -119,7 +125,7 @@ optional<vector<int>> get_topological_order2(graphmatrix::unordered_graph_base<T
 }
 
 template <class T>
-optional<vector<int>> get_topological_order(graphlist::unordered_graph_base<T> &g){
+optional<vector<int>> get_topological_order2(graphlist::unordered_graph_base<T> &g){
     vector<int> order;
     int n = g.size();
     set<int> visited, visiting;
