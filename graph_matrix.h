@@ -95,7 +95,7 @@ namespace graphmatrix{
             return node;
         }
 
-        size_t size(){
+        inline size_t size(){
             return node.size();
         }
     };
@@ -153,10 +153,7 @@ namespace graphmatrix{
     //graph class specialization for a T that supports < operator
     template <LessThanComparable T>
     class graph<T> : public graph_base<T> {
-        map<int, map<int, int>> adj;
-        vector<T> node;
         map<T, int> lookup;
-
     public:
         graph():graph_base<T>(){ }
 
@@ -177,7 +174,6 @@ namespace graphmatrix{
         vertex<T> operator[](int i){
             auto &lookup = this->lookup;
             auto upd = [i, &lookup](const T& oldval, const T& newval){
-                cout << "Updating value: " << oldval << ' ' << newval << ' ' << i << endl;
                 lookup.erase(oldval);
                 lookup[newval] = i;
             };

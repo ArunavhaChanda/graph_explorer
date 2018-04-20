@@ -21,6 +21,18 @@
 using namespace NMSPC;
 
 typedef std::pair<std::size_t,std::size_t> Pair;
+#define N 10000000
+vector<int> adj[N];
+bool visited[N];
+int cnt;
+void dfs(int u){
+    visited[u] = true;
+    for(int i : adj[u]){
+        if(visited[i]) continue;
+        cnt++;
+        dfs(i);
+    }
+}
 
 int main(){
     // another type of graph
@@ -34,7 +46,8 @@ int main(){
     int vert_tot = 0;
     set<int> nodes_added;
 
-    if (cites.is_open()){
+    // 790 726
+    if (cites.is_open()) {
         while(getline(cites,line)) {
             if (skip < 4) {
                 skip++;
@@ -69,8 +82,22 @@ int main(){
             auto index_new = cite_graph.get_index(new_label);
             //cout << "old index: " << *index_old << " and new index: " << *index_new <<endl;
             cite_graph.add_edge(*index_old, *index_new);
+            adj[*index_old].push_back(*index_new);
         }
     }
+
+    int n = nodes_added.size();
+    {
+        auto start = std::chrono::system_clock::now();
+        for(int i=0;i<n;i++){
+            if(visited[i]) continue;
+            dfs(i);
+        }
+        auto end = std::chrono::system_clock::now(); 
+        std::chrono::duration<double> elapsed_seconds = end-start;
+        std::cout << "top-sort time for dfs is: " << elapsed_seconds.count() << "s\n";
+    }
+
 
     auto start = std::chrono::system_clock::now();
     auto topological_order = get_topological_order(cite_graph);
