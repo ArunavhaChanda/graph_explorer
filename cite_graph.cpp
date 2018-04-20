@@ -95,7 +95,7 @@ int main(){
         }
         auto end = std::chrono::system_clock::now(); 
         std::chrono::duration<double> elapsed_seconds = end-start;
-        std::cout << "top-sort time for dfs is: " << elapsed_seconds.count() << "s\n";
+        std::cout << "time for dfs of all nodes is: " << elapsed_seconds.count() << "s\n";
     }
 
 
