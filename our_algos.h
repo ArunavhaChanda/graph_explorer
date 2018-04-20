@@ -5,6 +5,7 @@
 #include <optional>
 #include <stack>
 #include <queue>
+#include <unordered_set>
 #include "our_constants.h"
 
 using namespace NMSPC;
@@ -65,15 +66,15 @@ template <class T>
 optional<vector<int>> get_topological_order(graphmatrix::unordered_graph_base<T> &g){
     vector<int> order;
     int n = g.size();
-    set<int> visited, visiting;
-    stack<pair<int, pair<map<int, int>::iterator, map<int, int>::iterator>>> stk;
+    unordered_set<int> visited, visiting;
+    vector<pair<int, pair<map<int, int>::iterator, map<int, int>::iterator>>> stk;
     for(int i=0;i<n;i++){
         if(visited.count(i)) continue;
 
-        stk.push({i, {g[i].begin(), g[i].end()}});
+        stk.push_back({i, {g[i].begin(), g[i].end()}});
         visiting.insert(i);
         while(!stk.empty()){
-            auto cur = stk.top(); stk.pop();
+            auto cur = stk.back(); stk.pop_back();
             if(cur.second.first == cur.second.second){
                 visiting.erase(cur.first);
                 visited.insert(cur.first);
@@ -82,12 +83,12 @@ optional<vector<int>> get_topological_order(graphmatrix::unordered_graph_base<T>
             else{
                 pair<int, int> it = *(cur.second.first);
                 ++cur.second.first;
-                stk.push({cur.first,{cur.second.first, cur.second.second}});
+                stk.push_back({cur.first,{cur.second.first, cur.second.second}});
 
                 if(visiting.count(it.first)) return nullopt;
                 if(visited.count(it.first)) continue;
                 visiting.insert(it.first);
-                stk.push({it.first, {g[it.first].begin(), g[it.first].end()}});    
+                stk.push_back({it.first, {g[it.first].begin(), g[it.first].end()}});    
             }
         }
     }
