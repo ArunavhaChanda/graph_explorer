@@ -170,7 +170,6 @@ namespace graphlist{
     template <LessThanComparable T>
     class graph<T> : public graph_base<T> {
         map<T, int> lookup;
-
     public:
         graph():graph_base<T>(){ }
 
@@ -184,7 +183,7 @@ namespace graphlist{
         }
 
         //copy constructor
-        graph(const graph &val): graph_base<T>(val){}
+        graph(const graph &val): graph_base<T>(val), lookup{val.lookup}{}
 
         //copy assignment
         graph& operator= (const graph &val){

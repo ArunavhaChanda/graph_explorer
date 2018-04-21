@@ -168,9 +168,8 @@ namespace graphmatrix{
     //graph class specialization for a T that supports < operator
     template <LessThanComparable T>
     class graph<T> : public graph_base<T> {
-        
-    public:
         map<T, int> lookup;
+    public:
         graph():graph_base<T>(){ }
 
         graph(int n):graph_base<T>(n){ }
