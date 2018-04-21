@@ -109,6 +109,11 @@ namespace graphmatrix{
         inline size_t size(){
             return node.size();
         }
+
+        const inline size_t size() const{
+            return node.size();
+        }
+        
     };
 
     // Graph that stores nodes that support == operator and does not allow duplicates.
@@ -125,14 +130,14 @@ namespace graphmatrix{
 
     //general graph implementation for T that does not support < operator
     template <EqualityComparable T>
-    class graph : public graph_base<T> {
+    class graph2 : public graph_base<T> {
     public:
 
-        graph():graph_base<T>() { }
+        graph2():graph_base<T>() { }
 
-        graph(int n):graph_base<T>(n){ }
+        graph2(int n):graph_base<T>(n){ }
 
-        graph(const initializer_list<T> &inp):graph_base<T>(){
+        graph2(const initializer_list<T> &inp):graph_base<T>(){
             for(auto &it : inp){
                 if(auto t = get_index(it)) continue;
                 graph_base<T>::push_back(it);
@@ -146,7 +151,7 @@ namespace graphmatrix{
             return pos;
         }
 
-        int push_back(T &t){
+        int push_back(const T &t){
             return graph_base<T>::push_back(t);
         }
 
@@ -163,9 +168,10 @@ namespace graphmatrix{
 
     //graph class specialization for a T that supports < operator
     template <LessThanComparable T>
-    class graph<T> : public graph_base<T> {
-        map<T, int> lookup;
+    class graph : public graph_base<T> {
+        
     public:
+        map<T, int> lookup;
         graph():graph_base<T>(){ }
 
         graph(int n):graph_base<T>(n){ }
@@ -178,22 +184,18 @@ namespace graphmatrix{
         }
 
         //copy constructor
-        graph(const graph<T> &val):
-            lookup(val.lookup)  
-            {
-                this(val);
-            }
+        graph(graph<T> &val):graph_base<T>(val),lookup{val.lookup}{}
 
         //copy assignment
         graph& operator= (const graph<T> &val){
             if (this != &val)  {            
                 *this = val;
                 lookup = val.lookup;
-            }  
+            }
             return *this;  
         }  
 
-        int push_back(T &t){
+        int push_back(const T &t){
             if(lookup.count(t) == 0) return lookup[t] = graph_base<T>::push_back(t);
             return lookup[t];
         }
@@ -214,6 +216,10 @@ namespace graphmatrix{
         }
 
         int count(T& val){
+            return lookup.count(val);
+        }
+
+        const int count(const T& val)const{
             return lookup.count(val);
         }
     };
