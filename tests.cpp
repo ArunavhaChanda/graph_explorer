@@ -66,12 +66,14 @@ int main(){
     cout << "Max flow between vertex 0 and 2 is " << max_flow(g, 0, 2) << '\n';
 
     // another type of graph
-    graph<string> g2; // an empty graph.
-
+    graph<string> gg2; // an empty graph.
 
     // adding nodes.
     vector<string> node_values{"newyork"s, "seattle"s, "boston"s, "miami"s};
-    for(string &s : node_values) g2.push_back(s);
+    for(string &s : node_values) gg2.push_back(s);
+
+    graph<string> gll = gg2;
+    graph<string> g2(gll);
 
     if(auto index = g2.get_index("newyork"))
         cout << "index of newyork: " << *index << endl;

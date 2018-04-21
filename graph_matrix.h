@@ -67,10 +67,21 @@ namespace graphmatrix{
         }
 
     public:
-        unordered_graph_base(const unordered_graph_base<T> &val){
-            node = val.nodes();
-            adj = val.adj;
-        }
+        //copy constructor
+        unordered_graph_base(const unordered_graph_base<T> &val):
+            node(val.node),
+            adj(val.adj)  
+            {}
+
+        //copy assignment
+        unordered_graph_base& operator= (const unordered_graph_base<T> &val){
+            if (this != &val)  {            
+                node = val.node;  
+                adj = val.adj;
+            }  
+            return *this;  
+        }  
+
         virtual vertex<T> operator[](int i) = 0;
 
         int push_back(const T &t){
@@ -165,6 +176,22 @@ namespace graphmatrix{
                 lookup[it] = graph_base<T>::push_back(it);
             }
         }
+
+        //copy constructor
+        graph(const graph<T> &val):
+            lookup(val.lookup)  
+            {
+                this(val);
+            }
+
+        //copy assignment
+        graph& operator= (const graph<T> &val){
+            if (this != &val)  {            
+                *this = val;
+                lookup = val.lookup;
+            }  
+            return *this;  
+        }  
 
         int push_back(T &t){
             if(lookup.count(t) == 0) return lookup[t] = graph_base<T>::push_back(t);
