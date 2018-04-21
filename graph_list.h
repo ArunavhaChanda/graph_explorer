@@ -184,16 +184,16 @@ namespace graphlist{
         }
 
         //copy constructor
-        graph(const graph<T> &val): graph_base<T>(val){}
+        graph(const graph &val): graph_base<T>(val){}
 
         //copy assignment
-        // graph& operator= (const graph<T> &val){
-        //     if (this != &val)  {            
-        //         *this = val;
-        //         lookup = val.lookup;
-        //     }  
-        //     return *this;  
-        // }  
+        graph& operator= (const graph &val){
+            if (this != &val)  {            
+                *this = val;
+                lookup = val.lookup;
+            }  
+            return *this;  
+        }  
 
         int push_back(T &t){
             if(lookup.count(t) == 0) return lookup[t] = graph_base<T>::push_back(t);

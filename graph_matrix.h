@@ -130,14 +130,13 @@ namespace graphmatrix{
 
     //general graph implementation for T that does not support < operator
     template <EqualityComparable T>
-    class graph2 : public graph_base<T> {
+    class graph : public graph_base<T> {
     public:
+        graph():graph_base<T>() { }
 
-        graph2():graph_base<T>() { }
+        graph(int n):graph_base<T>(n){ }
 
-        graph2(int n):graph_base<T>(n){ }
-
-        graph2(const initializer_list<T> &inp):graph_base<T>(){
+        graph(const initializer_list<T> &inp):graph_base<T>(){
             for(auto &it : inp){
                 if(auto t = get_index(it)) continue;
                 graph_base<T>::push_back(it);
@@ -168,7 +167,7 @@ namespace graphmatrix{
 
     //graph class specialization for a T that supports < operator
     template <LessThanComparable T>
-    class graph : public graph_base<T> {
+    class graph<T> : public graph_base<T> {
         
     public:
         map<T, int> lookup;
@@ -183,11 +182,10 @@ namespace graphmatrix{
             }
         }
 
-        //copy constructor
-        graph(graph<T> &val):graph_base<T>(val),lookup{val.lookup}{}
+        graph(graph &val):graph_base<T>(val),lookup{val.lookup}{}
 
         //copy assignment
-        graph& operator= (const graph<T> &val){
+        graph& operator= (const graph &val){
             if (this != &val)  {            
                 *this = val;
                 lookup = val.lookup;
