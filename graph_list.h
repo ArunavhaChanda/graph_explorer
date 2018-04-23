@@ -69,10 +69,18 @@ namespace graphlist{
         }
 
     public:
-        unordered_graph_base(const unordered_graph_base<T> &val){
-            node = node;
-            adj = val.adj;
-        }
+        unordered_graph_base(const unordered_graph_base<T> &val):
+            node(val.node),
+            adj(val.adj)
+            {}
+
+        unordered_graph_base& operator= (const unordered_graph_base<T> &val){
+            if (this != &val)  {            
+                node = val.node;  
+                adj = val.adj;
+            }  
+            return *this;  
+        }  
 
         virtual vertex<T> operator[](int i) = 0;
 
@@ -161,10 +169,7 @@ namespace graphlist{
     //graph class specialization for a T that supports < operator
     template <LessThanComparable T>
     class graph<T> : public graph_base<T> {
-        map<int, map<int, int>> adj;
-        vector<T> node;
         map<T, int> lookup;
-
     public:
         graph():graph_base<T>(){ }
 
@@ -176,6 +181,18 @@ namespace graphlist{
                 lookup[it] = graph_base<T>::push_back(it);
             }
         }
+
+        //copy constructor
+        graph(const graph &val): graph_base<T>(val), lookup{val.lookup}{}
+
+        //copy assignment
+        graph& operator= (const graph &val){
+            if (this != &val)  {            
+                *this = val;
+                lookup = val.lookup;
+            }  
+            return *this;  
+        }  
 
         int push_back(T &t){
             if(lookup.count(t) == 0) return lookup[t] = graph_base<T>::push_back(t);
