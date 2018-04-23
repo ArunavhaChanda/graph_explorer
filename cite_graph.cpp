@@ -34,19 +34,22 @@ void dfs(int u){
     }
 }
 
-int main(){
+int main(int argc, char** argv){
+    string FILENAME = (argc > 1)? argv[1]:"./cit-Patents.txt";
     // another type of graph
     graph<string> cite_graph; // an empty graph.
 
     ifstream cites;
-    cites.open("./cit-Patents.txt");
+    cites.open(FILENAME);
     //cites.open("./Cit-HepTh.txt");
     string line;
     int skip = 0;
     int vert_tot = 0;
+    int edge_tot = 0;
     set<int> nodes_added;
 
     // 790 726
+    auto start_init = std::chrono::system_clock::now();
     if (cites.is_open()) {
         while(getline(cites,line)) {
             if (skip < 4) {
@@ -83,9 +86,15 @@ int main(){
             //cout << "old index: " << *index_old << " and new index: " << *index_new <<endl;
             cite_graph.add_edge(*index_old, *index_new);
             adj[*index_old].push_back(*index_new);
+            ++edge_tot;
         }
     }
 
+    cout << "\n\nFOR " << edge_tot << " EDGES:\n";
+
+    auto end_init = std::chrono::system_clock::now(); 
+    std::chrono::duration<double> elapsed_seconds_init = end_init-start_init;
+    std::cout << "Graph init time for graph_explorer is: " << elapsed_seconds_init.count() << "s\n";
     int n = nodes_added.size();
     {
         auto start = std::chrono::system_clock::now();
@@ -130,11 +139,12 @@ int main(){
     //Pair edges[1100000];
 
     ifstream cites_boost;
-    cites_boost.open("./cit-Patents.txt");
+    cites_boost.open(FILENAME);
     //cites_boost.open("./Cit-HepTh.txt");
     skip = 0;
     int edge_no = 0;
 
+    auto start_init_boost = std::chrono::system_clock::now();
     if (cites_boost.is_open()){
         while(getline(cites_boost,line)) {
             if (skip < 4) {
@@ -164,6 +174,10 @@ int main(){
         }
     }
     
+    auto end_init_boost = std::chrono::system_clock::now(); 
+    std::chrono::duration<double> elapsed_seconds_init_boost = end_init_boost-start_init_boost;
+    std::cout << "Graph init time for boost is: " << elapsed_seconds_init_boost.count() << "s\n";
+
     cites_boost.close();
 
     //Graph G(edges, edges + edge_no, edge_no);
