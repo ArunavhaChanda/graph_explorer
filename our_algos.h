@@ -10,13 +10,13 @@
 
 using namespace NMSPC;
 
-template <class T>
-int max_flow(unordered_graph_base<T> &g, int src, int target){
+template <class T, class Edge>
+int max_flow(unordered_graph_base<T, Edge> &g, int src, int target){
     assert(src < g.nodes().size() && target < g.nodes().size());
     if(src == target) return INT_MAX;
 
     // create a temp graph.
-    unordered_graph<T> g2(g.size());
+    unordered_graph<T, Edge> g2(g.size());
     for(int i=0;i<g.size();i++) for(auto &p : g[i]) g2.add_edge(i, p.first, p.second);
 
     // Edmond karp
@@ -62,8 +62,8 @@ int max_flow(unordered_graph_base<T> &g, int src, int target){
     return max_flow;
 }
 
-template <class T>
-bool dfs(int u, unordered_graph_base<T> &g, vector<int> &order, vector<bool> &visited, vector<bool> &visiting){
+template <class T, class Edge>
+bool dfs(int u, unordered_graph_base<T, Edge> &g, vector<int> &order, vector<bool> &visited, vector<bool> &visiting){
     visiting[u] = true;
     for(auto i : g[u]){
         if(visiting[i.first]) return false;
@@ -76,8 +76,8 @@ bool dfs(int u, unordered_graph_base<T> &g, vector<int> &order, vector<bool> &vi
     return true;
 }
 
-template <class T>
-optional<vector<int>> get_topological_order(unordered_graph_base<T> &g){
+template <class T, class Edge>
+optional<vector<int>> get_topological_order(unordered_graph_base<T, Edge> &g){
     size_t n = g.size();
     vector<int> order;
     vector<bool> visited(n, false), visiting(n, false);
@@ -89,8 +89,8 @@ optional<vector<int>> get_topological_order(unordered_graph_base<T> &g){
     return order;
 }
 
-template <class T>
-optional<vector<int>> get_topological_order2(graphmatrix::unordered_graph_base<T> &g){
+template <class T, class Edge>
+optional<vector<int>> get_topological_order2(graphmatrix::unordered_graph_base<T, Edge> &g){
     vector<int> order;
     int n = g.size();
     unordered_set<int> visited, visiting;
