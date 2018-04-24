@@ -124,8 +124,8 @@ optional<vector<int>> get_topological_order2(graphmatrix::unordered_graph_base<T
     return order;
 }
 
-template <class T>
-optional<vector<int>> get_topological_order2(graphlist::unordered_graph_base<T> &g){
+template <class T, class Edge>
+optional<vector<int>> get_topological_order2(graphlist::unordered_graph_base<T, Edge> &g){
     vector<int> order;
     int n = g.size();
     set<int> visited, visiting;
