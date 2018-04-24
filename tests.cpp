@@ -18,9 +18,9 @@ struct node{
     friend bool operator==(const node &l, const node &r){
         return l.a == r.a;
     }
-    // friend bool operator<(const node &l, const node &r){
-    //     return l.a < r.a;
-    // }
+    friend bool operator<(const node &l, const node &r){
+        return l.a < r.a;
+    }
 };
 
 int main(){

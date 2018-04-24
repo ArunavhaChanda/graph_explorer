@@ -17,6 +17,13 @@
 
 namespace graphlist{
     using namespace std;
+
+    struct duplicate_vertex_error : public exception {
+       const char * what () const throw () {
+          return "the given vertex already exists";
+       }
+    };
+
     //definition of vertex class to be used within graph
     template <class T, class Edge>
     class vertex{
@@ -161,7 +168,11 @@ namespace graphlist{
         }
 
         vertex<T, Edge> operator[](int i){
-            auto upd = [&](const T& oldval, const T& newval){ };
+            auto upd = [&](const T& oldval, const T& newval){
+                if(!(oldval == newval)){
+                    if(auto t = this->get_index(newval)) throw duplicate_vertex_error();
+                }
+            };
             return graph_base<T, Edge>::get_vertex(i, upd);
         }
 
@@ -207,8 +218,11 @@ namespace graphlist{
         vertex<T, Edge> operator[](int i){
             auto &lookup = this->lookup;
             auto upd = [i, &lookup](const T& oldval, const T& newval){
-                lookup.erase(oldval);
-                lookup[newval] = i;
+                if(!(oldval == newval)){
+                    if(lookup.count(newval)) throw duplicate_vertex_error();
+                    lookup.erase(oldval);
+                    lookup[newval] = i;
+                }
             };
             return graph_base<T, Edge>::get_vertex(i, upd);
         }

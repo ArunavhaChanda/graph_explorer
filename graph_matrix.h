@@ -216,9 +216,11 @@ namespace graphmatrix{
         vertex<T, Edge> operator[](uint32_t i){
             auto &lookup = this->lookup;
             auto upd = [i, &lookup](const T& oldval, const T& newval){
-                if(!(oldval == newval) && lookup.count(newval)) throw duplicate_vertex_error();
-                lookup.erase(oldval);
-                lookup[newval] = i;
+                if(!(oldval == newval)){
+                    if(lookup.count(newval)) throw duplicate_vertex_error();
+                    lookup.erase(oldval);
+                    lookup[newval] = i;
+                }
             };
             return graph_base<T, Edge>::get_vertex(i, upd);
         }
