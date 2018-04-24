@@ -95,6 +95,11 @@ namespace graphmatrix{
             adj[src][target] = weight;
         }
 
+        void add_undirected_edge(int src, int target, int weight = 1){
+            add_edge(src, target, weight);
+            add_edge(target, src, weight);
+        }
+
         void erase_edge(int src, int target){
             assert(target < node.size() && src < node.size());
             if(adj.count(src)){
