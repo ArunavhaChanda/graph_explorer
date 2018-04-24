@@ -20,27 +20,27 @@ namespace graphmatrix{
     //definition of vertex class to be used within graph
     template <class T, class Edge>
     class vertex{
-        unordered_map<int, Edge> &adj;
+        unordered_map<unsigned int, Edge> &adj;
         const function<void(const T&,const T&)> update;
         T& _val;
 
     public:
         const T& val;
-        vertex(T& rval, function<void(const T&,const T&)> u, unordered_map<int, Edge> &radj):adj{radj}, update{u}, val{rval}, _val{rval}{}
+        vertex(T& rval, function<void(const T&,const T&)> u, unordered_map<unsigned int, Edge> &radj):adj{radj}, update{u}, val{rval}, _val{rval}{}
         void operator =(const T& newval){
             update(val, newval);
             _val = newval;
         }
 
-        typename unordered_map<int,Edge>::iterator begin(){
+        typename unordered_map<unsigned int,Edge>::iterator begin(){
             return adj.begin();
         }
 
-        typename unordered_map<int,Edge>::iterator end(){
+        typename unordered_map<unsigned int,Edge>::iterator end(){
             return adj.end();
         }
 
-        Edge& operator[](int i) {
+        Edge& operator[](unsigned int i) {
             return adj[i];
         }
     };
@@ -48,12 +48,12 @@ namespace graphmatrix{
     // Graph that just stores nodes (no equal to or less than operator required for T)
     template <class T, class Edge>
     class unordered_graph_base{
-        unordered_map<int, unordered_map<int, Edge>> adj;
+        unordered_map<unsigned int, unordered_map<unsigned int, Edge>> adj;
         vector<T> node;
     protected:
         unordered_graph_base() { }
         
-        unordered_graph_base(int n){
+        unordered_graph_base(unsigned int n){
             node.resize(n);
         }
 
@@ -61,7 +61,7 @@ namespace graphmatrix{
             node = vector<T>(inp.begin(), inp.end());
         }
 
-        vertex<T, Edge> get_vertex(int i, const function<void(const T&, const T&)> upd){
+        vertex<T, Edge> get_vertex(unsigned int i, const function<void(const T&, const T&)> upd){
             assert(i < node.size());
             return vertex<T, Edge>(node[i], upd, adj[i]);
         }
@@ -82,25 +82,25 @@ namespace graphmatrix{
             return *this;  
         }  
 
-        virtual vertex<T, Edge> operator[](int i) = 0;
+        virtual vertex<T, Edge> operator[](unsigned int i) = 0;
 
-        int push_back(const T &t){
-            int pos = node.size();
+        unsigned int push_back(const T &t){
+            unsigned int pos = node.size();
             node.push_back(t);
             return pos;
         }
 
-        void add_edge(int src, int target, const Edge &weight){
+        void add_edge(unsigned int src, unsigned int target, const Edge &weight){
             assert(target < node.size() && src < node.size());
             adj[src][target] = weight;
         }
 
-        void add_undirected_edge(int src, int target, const Edge &weight){
+        void add_undirected_edge(unsigned int src, unsigned int target, const Edge &weight){
             add_edge(src, target, weight);
             add_edge(target, src, weight);
         }
 
-        void erase_edge(int src, int target){
+        void erase_edge(unsigned int src, unsigned int target){
             assert(target < node.size() && src < node.size());
             if(adj.count(src)){
                 adj[src].erase(target);
@@ -127,10 +127,10 @@ namespace graphmatrix{
     protected:
         graph_base(): unordered_graph_base<T, Edge>() { }
         
-        graph_base(int n) : unordered_graph_base<T, Edge>(n){ }
+        graph_base(unsigned int n) : unordered_graph_base<T, Edge>(n){ }
     public:
-        virtual int count(T& val) = 0;
-        virtual optional<int> get_index(const T& val) = 0;
+        virtual unsigned int count(T& val) = 0;
+        virtual optional<unsigned int> get_index(const T& val) = 0;
     };
 
     //general graph implementation for T that does not support < operator
@@ -139,7 +139,7 @@ namespace graphmatrix{
     public:
         graph():graph_base<T, Edge>() { }
 
-        graph(int n):graph_base<T, Edge>(n){ }
+        graph(unsigned int n):graph_base<T, Edge>(n){ }
 
         graph(const initializer_list<T> &inp):graph_base<T, Edge>(){
             for(auto &it : inp){
@@ -148,23 +148,23 @@ namespace graphmatrix{
             }
         }
 
-        optional<int> get_index(const T& val){
+        optional<unsigned int> get_index(const T& val){
             auto &node = unordered_graph_base<T, Edge>::nodes();
             ptrdiff_t pos = distance(node.begin(), find(node.begin(), node.end(), val));
             if (pos == node.size()) return nullopt;
             return pos;
         }
 
-        int push_back(const T &t){
+        unsigned int push_back(const T &t){
             return graph_base<T, Edge>::push_back(t);
         }
 
-        vertex<T, Edge> operator[](int i){
+        vertex<T, Edge> operator[](unsigned int i){
             auto upd = [&](const T& oldval, const T& newval){ };
             return graph_base<T, Edge>::get_vertex(i, upd);
         }
 
-        int count(T& val){
+        unsigned int count(T& val){
             if(auto t = get_index(val)) return 1;
             return 0;
         }
@@ -173,11 +173,11 @@ namespace graphmatrix{
     //graph class specialization for a T that supports < operator
     template <LessThanComparable T, class Edge>
     class graph<T, Edge> : public graph_base<T, Edge> {
-        map<T, int> lookup;
+        map<T, unsigned int> lookup;
     public:
         graph():graph_base<T, Edge>(){ }
 
-        graph(int n):graph_base<T, Edge>(n){ }
+        graph(unsigned int n):graph_base<T, Edge>(n){ }
 
         graph(const initializer_list<T> &inp):graph_base<T, Edge>(){
             for(auto &it : inp){
@@ -197,12 +197,12 @@ namespace graphmatrix{
             return *this;  
         }  
 
-        int push_back(const T &t){
+        unsigned int push_back(const T &t){
             if(lookup.count(t) == 0) return lookup[t] = graph_base<T, Edge>::push_back(t);
             return lookup[t];
         }
 
-        vertex<T, Edge> operator[](int i){
+        vertex<T, Edge> operator[](unsigned int i){
             auto &lookup = this->lookup;
             auto upd = [i, &lookup](const T& oldval, const T& newval){
                 lookup.erase(oldval);
@@ -211,17 +211,17 @@ namespace graphmatrix{
             return graph_base<T, Edge>::get_vertex(i, upd);
         }
 
-        optional<int> get_index(const T& val){
+        optional<unsigned int> get_index(const T& val){
             auto it = lookup.find(val);
             if(it == lookup.end()) return nullopt;
             return it->second;
         }
 
-        int count(T& val){
+        unsigned int count(T& val){
             return lookup.count(val);
         }
 
-        const int count(const T& val)const{
+        const unsigned int count(const T& val)const{
             return lookup.count(val);
         }
     };
@@ -230,11 +230,11 @@ namespace graphmatrix{
     class unordered_graph : public unordered_graph_base<T, Edge> {
     public:
         unordered_graph():unordered_graph_base<T, Edge>() { }
-        unordered_graph(int n):unordered_graph_base<T, Edge>(n) { }
+        unordered_graph(unsigned int n):unordered_graph_base<T, Edge>(n) { }
         unordered_graph(const initializer_list<T> &inp):unordered_graph_base<T, Edge>(inp) { }
         unordered_graph(const unordered_graph &val):unordered_graph_base<T, Edge>(val) { }
         unordered_graph(const unordered_graph &&val):unordered_graph_base<T, Edge>(val) { *val = nullptr; }
-        vertex<T, Edge> operator[](int i){
+        vertex<T, Edge> operator[](unsigned int i){
             auto upd = [](const T& oldval, const T& newval){ };
             return unordered_graph_base<T, Edge>::get_vertex(i, upd);
         }
