@@ -169,7 +169,7 @@ namespace graphmatrix{
         vertex<T, Edge> operator[](uint32_t i){
             auto upd = [&](const T& oldval, const T& newval){
                 if(!(oldval == newval)){
-                    if(auto t = get_index(newval)) throw duplicate_vertex_error();
+                    if(auto t = this->get_index(newval)) throw duplicate_vertex_error();
                 }
             };
             return graph_base<T, Edge>::get_vertex(i, upd);
