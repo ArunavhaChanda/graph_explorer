@@ -14,13 +14,17 @@ struct node{
     int a;
     double b;
     node():a(0),b(1.0){}
-    // friend bool operator==(const node &l, const node &r){
-    //     return l.a == r.a;
-    // }
+    friend bool operator==(const node &l, const node &r){
+        return l.a == r.a;
+    }
+    friend bool operator<(const node &l, const node &r){
+        return l.a < r.a;
+    }
 };
 
 int main(){
     unordered_graph<node, int> g12;
+    graph<node, int> g122;
     graph<int, int> g13;
     graph<string, int> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
     
