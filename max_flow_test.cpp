@@ -30,7 +30,7 @@ void graph_explorer_max_flow()
     int vert_tot = 0;
     set<int> nodes_added;
 
-    auto start = std::chrono::system_clock::now();
+    auto start_init = std::chrono::system_clock::now();
 
     if (flows.is_open()) {
         while(getline(flows,line)) {
@@ -82,7 +82,11 @@ void graph_explorer_max_flow()
     }
     auto source_index = flow_graph.get_index(source);
     auto sink_index = flow_graph.get_index(sink);
+    auto end_init = std::chrono::system_clock::now(); 
+    std::chrono::duration<double> elapsed_seconds_init = end_init-start_init;
+    std::cout << "Graph init time for graph_explorer is: " << elapsed_seconds_init.count() << "s\n";
 
+    auto start = std::chrono::system_clock::now();
     int max_flow_val = max_flow(flow_graph, *source_index, *sink_index);
 
     auto end = std::chrono::system_clock::now(); 
@@ -99,6 +103,8 @@ void graph_explorer_max_flow()
 
 void boost_max_flow()
 {
+    auto start_init = std::chrono::system_clock::now();
+
     typedef boost::adjacency_list_traits<boost::vecS, boost::vecS, boost::directedS > Traits;
     typedef boost::adjacency_list<boost::listS, boost::vecS, boost::directedS,
         boost::property<boost::vertex_name_t, std::string >,
@@ -107,7 +113,6 @@ void boost_max_flow()
         boost::property<boost::edge_reverse_t, Traits::edge_descriptor>>>> Graph;
  
 
-    auto start = std::chrono::system_clock::now();
 
     Graph g;
  
@@ -123,6 +128,12 @@ void boost_max_flow()
     std::ifstream is ("BVZ-tsukuba0.max", std::ios::in);
     read_dimacs_max_flow(g, capacity, rev, s, t, is);
  
+    auto end_init = std::chrono::system_clock::now(); 
+    std::chrono::duration<double> elapsed_seconds_init = end_init-start_init;
+    std::cout << "Graph init time for boost is: " << elapsed_seconds_init.count() << "s\n";
+
+    auto start = std::chrono::system_clock::now();
+
     #if defined(BOOST_MSVC) && BOOST_MSVC <= 1300
       std::vector<default_color_type> color(num_vertices(g));
       std::vector<Traits::edge_descriptor> pred(num_vertices(g));
@@ -146,6 +157,7 @@ void boost_max_flow()
 
 int main()
 {
+    cout << "\n\n ----- MAX FLOW -----";
     graph_explorer_max_flow();
     boost_max_flow();
     return 0;
