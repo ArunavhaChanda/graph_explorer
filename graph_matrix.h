@@ -9,6 +9,7 @@
 #include <iostream>
 #include <set>
 #include <climits>
+#include <exception>
 #include <functional>
 
 #ifndef GRAPH_MATRIX
@@ -16,6 +17,12 @@
 
 namespace graphmatrix{
     using namespace std;
+
+    struct duplicate_vertex_error : public exception {
+       const char * what () const throw () {
+          return "the given vertex already exists";
+       }
+    };
 
     //definition of vertex class to be used within graph
     template <class T, class Edge>
@@ -160,7 +167,11 @@ namespace graphmatrix{
         }
 
         vertex<T, Edge> operator[](uint32_t i){
-            auto upd = [&](const T& oldval, const T& newval){ };
+            auto upd = [&](const T& oldval, const T& newval){
+                if(!(oldval == newval)){
+                    if(auto t = get_index(newval)) throw duplicate_vertex_error();
+                }
+            };
             return graph_base<T, Edge>::get_vertex(i, upd);
         }
 
@@ -205,6 +216,7 @@ namespace graphmatrix{
         vertex<T, Edge> operator[](uint32_t i){
             auto &lookup = this->lookup;
             auto upd = [i, &lookup](const T& oldval, const T& newval){
+                if(!(oldval == newval) && lookup.count(newval)) throw duplicate_vertex_error();
                 lookup.erase(oldval);
                 lookup[newval] = i;
             };
