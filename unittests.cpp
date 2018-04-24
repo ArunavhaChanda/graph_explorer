@@ -15,11 +15,11 @@ TEST_CASE("GM:graph testing on not comparable objects", "[GM:unordered_graph]"){
     uncomp a{2,"hi"s};
     uncomp b{3,"hi1"s};
 
-    unordered_graph<uncomp> g1;
-    unordered_graph<uncomp> g2(5);
-    unordered_graph<uncomp> g3{a,b};
-    unordered_graph<uncomp> g4(g3);
-    unordered_graph<uncomp> g5 = g4;
+    unordered_graph<uncomp, int> g1;
+    unordered_graph<uncomp, int> g2(5);
+    unordered_graph<uncomp, int> g3{a,b};
+    unordered_graph<uncomp, int> g4(g3);
+    unordered_graph<uncomp, int> g5 = g4;
     
     SECTION("testing sizes"){
         REQUIRE(g1.size() == 0);
@@ -38,7 +38,7 @@ TEST_CASE("GM:graph testing on not comparable objects", "[GM:unordered_graph]"){
     }
 
     SECTION("testing add_edge and erase_edge"){
-        g2.add_edge(0,1);
+        g2.add_edge(0,1,1);
         g2.erase_edge(0,1);
     }
 
@@ -62,11 +62,11 @@ TEST_CASE("GM:graph testing on == comparable objects", "[GM:equality_graph]"){
     eqcomp b{3,"hi1"s};
     eqcomp c{4,"hi2"s};
 
-    graph<eqcomp> g1;
-    graph<eqcomp> g2(5);
-    graph<eqcomp> g3{a,b};
-    graph<eqcomp> g4(g3);
-    graph<eqcomp> g5 = g4;
+    graph<eqcomp, int> g1;
+    graph<eqcomp, int> g2(5);
+    graph<eqcomp, int> g3{a,b};
+    graph<eqcomp, int> g4(g3);
+    graph<eqcomp, int> g5 = g4;
     
     SECTION("testing sizes"){
         REQUIRE(g1.size() == 0);
@@ -95,7 +95,7 @@ TEST_CASE("GM:graph testing on == comparable objects", "[GM:equality_graph]"){
     }
 
     SECTION("testing add_edge and erase_edge"){
-        g2.add_edge(0,1);
+        g2.add_edge(0,1, 1);
         g2.erase_edge(0,1);
     }
 
@@ -112,11 +112,11 @@ TEST_CASE("GM:graph testing on < comparable objects", "[GM:lessthan_graph]"){
     string b = "hi1"s;
     string c = "hi2"s;
 
-    graph<string> g1;
-    graph<string> g2(5);
-    graph<string> g3{a,b};
-    graph<string> g4(g3);
-    graph<string> g5 = g4;
+    graph<string, int> g1;
+    graph<string, int> g2(5);
+    graph<string, int> g3{a,b};
+    graph<string, int> g4(g3);
+    graph<string, int> g5 = g4;
     
     SECTION("testing sizes"){
         REQUIRE(g1.size() == 0);
@@ -145,7 +145,7 @@ TEST_CASE("GM:graph testing on < comparable objects", "[GM:lessthan_graph]"){
     }
 
     SECTION("testing add_edge and erase_edge"){
-        g2.add_edge(0,1);
+        g2.add_edge(0,1,1);
         g2.erase_edge(0,1);
     }
 
@@ -169,11 +169,11 @@ TEST_CASE("GL:graph testing on not comparable objects", "[GL:unordered_graph]"){
     uncomp a{2,"hi"s};
     uncomp b{3,"hi1"s};
 
-    graphlist::unordered_graph<uncomp> g1;
-    graphlist::unordered_graph<uncomp> g2(5);
-    graphlist::unordered_graph<uncomp> g3{a,b};
-    graphlist::unordered_graph<uncomp> g4(g3);
-    graphlist::unordered_graph<uncomp> g5 = g4;
+    graphlist::unordered_graph<uncomp, int> g1;
+    graphlist::unordered_graph<uncomp, int> g2(5);
+    graphlist::unordered_graph<uncomp, int> g3{a,b};
+    graphlist::unordered_graph<uncomp, int> g4(g3);
+    graphlist::unordered_graph<uncomp, int> g5 = g4;
     
     SECTION("testing sizes"){
         REQUIRE(g1.size() == 0);
@@ -192,7 +192,7 @@ TEST_CASE("GL:graph testing on not comparable objects", "[GL:unordered_graph]"){
     }
 
     SECTION("testing add_edge and erase_edge"){
-        g2.add_edge(0,1);
+        g2.add_edge(0,1,1);
         g2.erase_edge(0,1);
     }
 
@@ -216,11 +216,11 @@ TEST_CASE("GL:graph testing on == comparable objects", "[GL:equality_graph]"){
     eqcomp b{3,"hi1"s};
     eqcomp c{4,"hi2"s};
 
-    graphlist::graph<eqcomp> g1;
-    graphlist::graph<eqcomp> g2(5);
-    graphlist::graph<eqcomp> g3{a,b};
-    graphlist::graph<eqcomp> g4(g3);
-    graphlist::graph<eqcomp> g5 = g4;
+    graphlist::graph<eqcomp, int> g1;
+    graphlist::graph<eqcomp, int> g2(5);
+    graphlist::graph<eqcomp, int> g3{a,b};
+    graphlist::graph<eqcomp, int> g4(g3);
+    graphlist::graph<eqcomp, int> g5 = g4;
     
     SECTION("testing sizes"){
         REQUIRE(g1.size() == 0);
@@ -249,7 +249,7 @@ TEST_CASE("GL:graph testing on == comparable objects", "[GL:equality_graph]"){
     }
 
     SECTION("testing add_edge and erase_edge"){
-        g2.add_edge(0,1);
+        g2.add_edge(0,1,1);
         g2.erase_edge(0,1);
     }
 
@@ -266,11 +266,11 @@ TEST_CASE("GL:graph testing on < comparable objects", "[GL:lessthan_graph]"){
     string b = "hi1"s;
     string c = "hi2"s;
 
-    graphlist::graph<string> g1;
-    graphlist::graph<string> g2(5);
-    graphlist::graph<string> g3{a,b};
-    graphlist::graph<string> g4(g3);
-    graphlist::graph<string> g5 = g4;
+    graphlist::graph<string, int> g1;
+    graphlist::graph<string, int> g2(5);
+    graphlist::graph<string, int> g3{a,b};
+    graphlist::graph<string, int> g4(g3);
+    graphlist::graph<string, int> g5 = g4;
     
     SECTION("testing sizes"){
         REQUIRE(g1.size() == 0);
@@ -299,7 +299,7 @@ TEST_CASE("GL:graph testing on < comparable objects", "[GL:lessthan_graph]"){
     }
 
     SECTION("testing add_edge and erase_edge"){
-        g2.add_edge(0,1);
+        g2.add_edge(0,1,1);
         g2.erase_edge(0,1);
     }
 
