@@ -141,7 +141,16 @@ namespace graphmatrix{
         
         graph_base(uint32_t n) : unordered_graph_base<T, Edge>(n){ }
     public:
-        virtual uint32_t count(T& val) = 0;
+        int count(T& val){
+            if(auto t = get_index(val)) return 1;
+            return 0;
+        }
+
+        const uint32_t count(const T& val)const{
+            if(auto t = get_index(val)) return 1;
+            return 0;
+        }
+
         virtual optional<uint32_t> get_index(const T& val) = 0;
     };
 
@@ -178,11 +187,6 @@ namespace graphmatrix{
                 }
             };
             return graph_base<T, Edge>::get_vertex(i, upd);
-        }
-
-        uint32_t count(T& val){
-            if(auto t = get_index(val)) return 1;
-            return 0;
         }
     };
 
@@ -234,14 +238,6 @@ namespace graphmatrix{
             auto it = lookup.find(val);
             if(it == lookup.end()) return nullopt;
             return it->second;
-        }
-
-        uint32_t count(T& val){
-            return lookup.count(val);
-        }
-
-        const uint32_t count(const T& val)const{
-            return lookup.count(val);
         }
     };
 

@@ -141,7 +141,16 @@ namespace graphlist{
         
         graph_base(int n) : unordered_graph_base<T, Edge>(n){ }
     public:
-        virtual int count(T& val) = 0;
+        int count(T& val){
+            if(auto t = get_index(val)) return 1;
+            return 0;
+        }
+
+        const uint32_t count(const T& val)const{
+            if(auto t = get_index(val)) return 1;
+            return 0;
+        }
+        
         virtual optional<int> get_index(const T& val) = 0;
     };
 
@@ -179,11 +188,6 @@ namespace graphlist{
                 }
             };
             return graph_base<T, Edge>::get_vertex(i, upd);
-        }
-
-        int count(T& val){
-            if(auto t = get_index(val)) return 1;
-            return 0;
         }
     };
 
@@ -236,10 +240,6 @@ namespace graphlist{
             auto it = lookup.find(val);
             if(it == lookup.end()) return nullopt;
             return it->second;
-        }
-
-        int count(T& val){
-            return lookup.count(val);
         }
     };
 

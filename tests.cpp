@@ -28,7 +28,7 @@ int main(){
     graph<node, int> g122;
     g122.push_back(node(1,2));
     g122.push_back(node(2,2));
-    g122[1] = node(1,2);
+    g122[1] = node(3,2);
     cout << g122.size() << '\n';
     graph<int, int> g13;
     graph<string, int> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
