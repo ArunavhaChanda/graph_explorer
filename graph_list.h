@@ -150,7 +150,7 @@ namespace graphlist{
             if(auto t = get_index(val)) return 1;
             return 0;
         }
-        
+
         virtual optional<int> get_index(const T& val) = 0;
     };
 
@@ -178,7 +178,8 @@ namespace graphlist{
         }
 
         int push_back(T &t){
-            return graph_base<T, Edge>::push_back(t);
+            if(auto it = get_index(t)) return *it;
+            return unordered_graph_base<T, Edge>::push_back(t);
         }
 
         vertex<T, Edge> operator[](int i){
@@ -219,8 +220,8 @@ namespace graphlist{
             return *this;  
         }  
 
-        int push_back(T &t){
-            if(lookup.count(t) == 0) return lookup[t] = graph_base<T, Edge>::push_back(t);
+        int push_back(const T &t){
+            if(lookup.count(t) == 0) return lookup[t] = unordered_graph_base<T, Edge>::push_back(t);
             return lookup[t];
         }
 

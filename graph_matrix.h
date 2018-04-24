@@ -165,7 +165,7 @@ namespace graphmatrix{
         graph(const initializer_list<T> &inp):graph_base<T, Edge>(){
             for(auto &it : inp){
                 if(auto t = get_index(it)) continue;
-                graph_base<T, Edge>::push_back(it);
+                unordered_graph_base<T, Edge>::push_back(it);
             }
         }
 
@@ -177,7 +177,8 @@ namespace graphmatrix{
         }
 
         uint32_t push_back(const T &t){
-            return graph_base<T, Edge>::push_back(t);
+            if(auto it = get_index(t)) return *it;
+            return unordered_graph_base<T, Edge>::push_back(t);
         }
 
         vertex<T, Edge> operator[](uint32_t i){
@@ -218,7 +219,7 @@ namespace graphmatrix{
         }  
 
         uint32_t push_back(const T &t){
-            if(lookup.count(t) == 0) return lookup[t] = graph_base<T, Edge>::push_back(t);
+            if(lookup.count(t) == 0) return lookup[t] = unordered_graph_base<T, Edge>::push_back(t);
             return lookup[t];
         }
 
