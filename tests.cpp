@@ -20,9 +20,9 @@ struct node{
 };
 
 int main(){
-    unordered_graph<node> g12;
-    graph<int> g13;
-    graph<string> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
+    unordered_graph<node, int> g12;
+    graph<int, int> g13;
+    graph<string, int> g3{"New York"s, "Chicago"s, "Seattle"s, "Boston"s};
     
     if(auto t = g3.get_index("New York")) cout << "index of New York: " << *t << endl;
     else cout << "New York not found" << endl;
@@ -56,7 +56,7 @@ int main(){
     for(auto &p : g3[0]) cout << g3[p.first].val << ' ' << p.second << endl;
 
     int n = 10;
-    graph<int> g(n); 
+    graph<int, int> g(n); 
     for(int i=0;i<n;i++) g[i] = i; // assigning values to vertices.
 
     vector<vector<int>> edges{{0,1,2},{1,2,3},{0,2,10},{2,3,1}};
@@ -66,14 +66,14 @@ int main(){
     cout << "Max flow between vertex 0 and 2 is " << max_flow(g, 0, 2) << '\n';
 
     // another type of graph
-    graph<string> gg2; // an empty graph.
+    graph<string, long long> gg2; // an empty graph.
 
     // adding nodes.
     vector<string> node_values{"newyork"s, "seattle"s, "boston"s, "miami"s};
     for(string &s : node_values) gg2.push_back(s);
 
-    graph<string> gll = gg2;
-    graph<string> g2(gll);
+    graph<string,long long> gll = gg2;
+    graph<string, long long> g2(gll);
 
     if(auto index = g2.get_index("newyork"))
         cout << "index of newyork: " << *index << endl;
