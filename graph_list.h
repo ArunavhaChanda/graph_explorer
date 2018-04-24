@@ -119,6 +119,11 @@ namespace graphlist{
                 }
         }
 
+        void erase_undirected_edge(uint32_t src, uint32_t target){
+            erase_edge(src, target);
+            erase_edge(target, src);
+        }        
+
         const vector<T> &nodes() const{
             return node;
         }
