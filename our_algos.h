@@ -13,7 +13,7 @@ using namespace NMSPC;
 template <class T, class Edge>
 int max_flow(unordered_graph_base<T, Edge> &g, int src, int target){
     assert(src < g.nodes().size() && target < g.nodes().size());
-    if(src == target) return INT_MAX;
+    if(src == target) return UINT32_MAX;
 
     // create a temp graph.
     unordered_graph<T, Edge> g2(g.size());
