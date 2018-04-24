@@ -11,16 +11,16 @@
 using namespace NMSPC;
 
 template <class T, class Edge>
-int max_flow(unordered_graph_base<T, Edge> &g, int src, int target){
+Edge max_flow(unordered_graph_base<T, Edge> &g, uint32_t src, uint32_t target){
     assert(src < g.nodes().size() && target < g.nodes().size());
-    if(src == target) return UINT32_MAX;
+    if(src == target) return numeric_limits<Edge>::max();;
 
     // create a temp graph.
     unordered_graph<T, Edge> g2(g.size());
     for(int i=0;i<g.size();i++) for(auto &p : g[i]) g2.add_edge(i, p.first, p.second);
 
     // Edmond karp
-    int max_flow = 0;
+    Edge max_flow = 0;
     bool found = true;
     while(found){
         found = false;
@@ -44,7 +44,7 @@ int max_flow(unordered_graph_base<T, Edge> &g, int src, int target){
 
         if(found){
             auto iter = target;
-            int flow = INT_MAX;
+            Edge flow = numeric_limits<Edge>::max();;
             while(iter != src){
                 flow = min(flow, g2[parent[iter]][iter]);
                 iter = parent[iter];

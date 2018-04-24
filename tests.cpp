@@ -28,6 +28,7 @@ int main(){
     graph<node, int> g122;
     g122.push_back(node(1,2));
     g122.push_back(node(2,2));
+    cout << max_flow(g122, 0, 0) << endl;
     g122[1] = node(3,2);
     cout << g122.size() << '\n';
     graph<int, int> g13;
