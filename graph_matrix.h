@@ -173,7 +173,7 @@ namespace graphmatrix{
     //graph class specialization for a T that supports < operator
     template <LessThanComparable T, class Edge>
     class graph<T, Edge> : public graph_base<T, Edge> {
-        unordered_map<T, int> lookup;
+        map<T, int> lookup;
     public:
         graph():graph_base<T, Edge>(){ }
 
