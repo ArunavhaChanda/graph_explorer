@@ -20,7 +20,7 @@ using namespace NMSPC;
 void graph_explorer_max_flow()
 {
 
-    graph<string> flow_graph; // an empty graph.
+    graph<string, int> flow_graph; // an empty graph.
 
     ifstream flows;
     flows.open("./BVZ-tsukuba0.max");

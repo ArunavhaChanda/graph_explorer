@@ -22,7 +22,7 @@ using namespace NMSPC;
 
 int main(){
     // another type of graph
-    graph<string> class_graph; // an empty graph.
+    graph<string, int> class_graph; // an empty graph.
 
     ifstream classes;
     classes.open("./columbia_ce_reqs.txt");
@@ -56,7 +56,7 @@ int main(){
             auto index_old = class_graph.get_index(old_label);
             auto index_new = class_graph.get_index(new_label);
             //cout << "old index: " << *index_old << " and new index: " << *index_new <<endl;
-            class_graph.add_edge(*index_old, *index_new);
+            class_graph.add_edge(*index_old, *index_new, 1);
         }
     }
 
