@@ -31,7 +31,7 @@ int main(int argc, char** argv){
     string FILENAME = (argc > 1)? argv[1]:"./cit-Patents.txt";
 
     // another type of graph
-    graph<string_wrap> cite_graph; // an empty graph.
+    graph<string_wrap, int> cite_graph; // an empty graph.
 
     ifstream cites;
     cites.open(FILENAME);
@@ -80,7 +80,7 @@ int main(int argc, char** argv){
             auto index_old = cite_graph.get_index(old_label);
             auto index_new = cite_graph.get_index(new_label);
             //cout << "old index: " << *index_old << " and new index: " << *index_new <<endl;
-            cite_graph.add_edge(*index_old, *index_new);
+            cite_graph.add_edge(*index_old, *index_new, 1);
             ++edge_tot;
         }
     }
