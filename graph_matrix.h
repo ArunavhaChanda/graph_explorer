@@ -20,23 +20,23 @@ namespace graphmatrix{
     //definition of vertex class to be used within graph
     template <class T, class Edge>
     class vertex{
-        map<int, Edge> &adj;
+        unordered_map<int, Edge> &adj;
         const function<void(const T&,const T&)> update;
         T& _val;
 
     public:
         const T& val;
-        vertex(T& rval, function<void(const T&,const T&)> u, map<int, Edge> &radj):adj{radj}, update{u}, val{rval}, _val{rval}{}
+        vertex(T& rval, function<void(const T&,const T&)> u, unordered_map<int, Edge> &radj):adj{radj}, update{u}, val{rval}, _val{rval}{}
         void operator =(const T& newval){
             update(val, newval);
             _val = newval;
         }
 
-        typename map<int,Edge>::iterator begin(){
+        typename unordered_map<int,Edge>::iterator begin(){
             return adj.begin();
         }
 
-        typename map<int,Edge>::iterator end(){
+        typename unordered_map<int,Edge>::iterator end(){
             return adj.end();
         }
 
@@ -48,7 +48,7 @@ namespace graphmatrix{
     // Graph that just stores nodes (no equal to or less than operator required for T)
     template <class T, class Edge>
     class unordered_graph_base{
-        map<int, map<int, Edge>> adj;
+        unordered_map<int, unordered_map<int, Edge>> adj;
         vector<T> node;
     protected:
         unordered_graph_base() { }
@@ -173,7 +173,7 @@ namespace graphmatrix{
     //graph class specialization for a T that supports < operator
     template <LessThanComparable T, class Edge>
     class graph<T, Edge> : public graph_base<T, Edge> {
-        map<T, int> lookup;
+        unordered_map<T, int> lookup;
     public:
         graph():graph_base<T, Edge>(){ }
 
