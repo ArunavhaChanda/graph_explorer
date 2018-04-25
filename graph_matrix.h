@@ -1,6 +1,5 @@
 //Implementation of our graph using a vector to represent a map/matrix
 
-#include "our_concepts.h"
 #include <vector>
 #include <optional>
 #include <algorithm>
@@ -11,6 +10,11 @@
 #include <climits>
 #include <exception>
 #include <functional>
+
+#ifndef CONCEPTS
+#define CONCEPTS
+#include "our_concepts.h"
+#endif
 
 #ifndef GRAPH_MATRIX
 #define GRAPH_MATRIX 1
@@ -25,7 +29,7 @@ namespace graphmatrix{
     };
 
     //definition of vertex class to be used within graph
-    template <class T, class Edge>
+    template <class T, NumericType Edge>
     class vertex{
         unordered_map<uint32_t, Edge> &adj;
         const function<void(const T&,const T&)> update;
@@ -53,7 +57,7 @@ namespace graphmatrix{
     };
 
     // Graph that just stores nodes (no equal to or less than operator required for T)
-    template <class T, class Edge>
+    template <class T, NumericType Edge>
     class unordered_graph_base{
         unordered_map<uint32_t, unordered_map<uint32_t, Edge>> adj;
         vector<T> node;
@@ -134,7 +138,7 @@ namespace graphmatrix{
     };
 
     // Graph that stores nodes that support == operator and does not allow duplicates.
-    template <EqualityComparable T, class Edge>
+    template <EqualityComparable T, NumericType Edge>
     class graph_base : public unordered_graph_base<T, Edge> {
     protected:
         graph_base(): unordered_graph_base<T, Edge>() { }
@@ -155,7 +159,7 @@ namespace graphmatrix{
     };
 
     //general graph implementation for T that does not support < operator
-    template <EqualityComparable T, class Edge>
+    template <EqualityComparable T, NumericType Edge>
     class graph : public graph_base<T, Edge> {
     public:
         graph():graph_base<T, Edge>() { }
@@ -192,7 +196,7 @@ namespace graphmatrix{
     };
 
     //graph class specialization for a T that supports < operator
-    template <LessThanComparable T, class Edge>
+    template <LessThanComparable T, NumericType Edge>
     class graph<T, Edge> : public graph_base<T, Edge> {
         map<T, uint32_t> lookup;
     public:
@@ -242,7 +246,7 @@ namespace graphmatrix{
         }
     };
 
-    template <class T, class Edge>
+    template <class T, NumericType Edge>
     class unordered_graph : public unordered_graph_base<T, Edge> {
     public:
         unordered_graph():unordered_graph_base<T, Edge>() { }

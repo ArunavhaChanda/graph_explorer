@@ -1,6 +1,5 @@
 //Implementation of our graph using a vector to represent a map/matrix
 
-#include "our_concepts.h"
 #include <vector>
 #include <optional>
 #include <algorithm>
@@ -11,6 +10,12 @@
 #include <set>
 #include <climits>
 #include <functional>
+#include <type_traits>
+
+#ifndef CONCEPTS
+#define CONCEPTS
+#include "our_concepts.h"
+#endif
 
 #ifndef GRAPH_LIST
 #define GRAPH_LIST 1
@@ -25,7 +30,7 @@ namespace graphlist{
     };
 
     //definition of vertex class to be used within graph
-    template <class T, class Edge>
+    template <class T, NumericType Edge>
     class vertex{
         list<pair<int, Edge>> &adj;
         const function<void(const T&,const T&)> update;
@@ -55,7 +60,7 @@ namespace graphlist{
     };
 
     // Graph that just stores nodes (no equal to or less than operator required for T)
-    template <class T, class Edge>
+    template <class T, NumericType Edge>
     class unordered_graph_base{
         map<int, list<pair<int, Edge>>> adj;
         vector<T> node;
@@ -155,7 +160,7 @@ namespace graphlist{
     };
 
     //general graph implementation for T that does not support < operator
-    template <EqualityComparable T, class Edge>
+    template <EqualityComparable T, NumericType Edge>
     class graph : public graph_base<T, Edge> {
     public:
 
@@ -193,7 +198,7 @@ namespace graphlist{
     };
 
     //graph class specialization for a T that supports < operator
-    template <LessThanComparable T, class Edge>
+    template <LessThanComparable T, NumericType Edge>
     class graph<T, Edge> : public graph_base<T, Edge> {
         map<T, int> lookup;
     public:
@@ -244,7 +249,7 @@ namespace graphlist{
         }
     };
 
-    template <class T, class Edge>
+    template <class T, NumericType Edge>
     class unordered_graph : public unordered_graph_base<T, Edge> {
     public:
         unordered_graph():unordered_graph_base<T, Edge>() { }

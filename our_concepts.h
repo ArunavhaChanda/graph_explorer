@@ -11,3 +11,7 @@ template<typename T>
 concept bool LessThanComparable = requires(T a, T b) {
     { a < b } -> bool;
 } && EqualityComparable<T>;
+
+//Based off of Andrew Sutton's library
+template<typename T>
+concept bool NumericType() { return std::is_arithmetic<T>::value; }
