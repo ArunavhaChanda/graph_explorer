@@ -159,12 +159,12 @@ namespace graphmatrix{
         graph_base& operator= (graph_base<T, Edge> &&val) = default;
 
     public:
-        uint32_t count(const T& val){
+        uint8_t count(const T& val){
             if(auto t = get_index(val)) return 1;
             return 0;
         }
 
-        const uint32_t count(const T& val)const{
+        const uint8_t count(const T& val)const{
             if(auto t = get_index(val)) return 1;
             return 0;
         }
