@@ -4,7 +4,6 @@
 #include <optional>
 #include <algorithm>
 #include <map>
-#include <cassert>
 #include <iostream>
 #include <set>
 #include <climits>
@@ -28,16 +27,22 @@ namespace graphmatrix{
        }
     };
 
+    struct vertex_out_of_range_error : public exception {
+       const char * what () const throw () {
+          return "the index of the vertex is out of range";
+       }
+    };
+
     //definition of vertex class to be used within graph
     template <class T, NumericType Edge>
     class vertex{
         unordered_map<uint32_t, Edge> &adj;
         const function<void(const T&,const T&)> update;
         T& _val;
-
+        size_t n;
     public:
         const T& val;
-        vertex(T& rval, function<void(const T&,const T&)> u, unordered_map<uint32_t, Edge> &radj):adj{radj}, update{u}, val{rval}, _val{rval}{}
+        vertex(T& rval, function<void(const T&,const T&)> u, unordered_map<uint32_t, Edge> &radj, size_t nn):n{nn}, adj{radj}, update{u}, val{rval}, _val{rval}{}
         void operator =(const T& newval){
             update(val, newval);
             _val = newval;
@@ -52,6 +57,7 @@ namespace graphmatrix{
         }
 
         Edge& operator[](uint32_t i) {
+            if(i >= n) throw vertex_out_of_range_error();
             return adj[i];
         }
     };
@@ -73,8 +79,8 @@ namespace graphmatrix{
         }
 
         vertex<T, Edge> get_vertex(uint32_t i, const function<void(const T&, const T&)> upd){
-            assert(i < node.size());
-            return vertex<T, Edge>(node[i], upd, adj[i]);
+            if(i >= node.size()) throw vertex_out_of_range_error();
+            return vertex<T, Edge>(node[i], upd, adj[i], node.size());
         }
 
     public:
@@ -101,7 +107,7 @@ namespace graphmatrix{
         }
 
         void add_edge(uint32_t src, uint32_t target, const Edge &weight){
-            assert(target < node.size() && src < node.size());
+            if(target >= node.size() || src >= node.size()) throw vertex_out_of_range_error();
             adj[src][target] = weight;
         }
 
@@ -111,7 +117,7 @@ namespace graphmatrix{
         }
 
         void erase_edge(uint32_t src, uint32_t target){
-            assert(target < node.size() && src < node.size());
+            if(target >= node.size() || src >= node.size()) throw vertex_out_of_range_error();
             if(adj.count(src)){
                 adj[src].erase(target);
             }
@@ -120,6 +126,10 @@ namespace graphmatrix{
         void erase_undirected_edge(uint32_t src, uint32_t target){
             erase_edge(src, target);
             erase_edge(target, src);
+        }
+
+        void reserve(uint32_t n){
+            node.reserve(n);
         }
 
         const vector<T> &nodes() const{
@@ -142,7 +152,6 @@ namespace graphmatrix{
     protected:
         graph_base(): unordered_graph_base<T, Edge>() { }
         
-        graph_base(uint32_t n, const T& val) : unordered_graph_base<T, Edge>(n, val){ }
         graph_base(const graph_base &val):unordered_graph_base<T, Edge>(val){}
         graph_base(graph_base &&val):unordered_graph_base<T, Edge>(move(val)){}
 
@@ -168,8 +177,6 @@ namespace graphmatrix{
     class graph : public graph_base<T, Edge> {
     public:
         graph():graph_base<T, Edge>() { }
-
-        graph(uint32_t n, const T&val = T()):graph_base<T, Edge>(n, val){ }
 
         graph(const initializer_list<T> &inp):graph_base<T, Edge>(){
             for(auto &it : inp){
@@ -212,8 +219,6 @@ namespace graphmatrix{
         map<T, uint32_t> lookup;
     public:
         graph():graph_base<T, Edge>(){ }
-
-        graph(uint32_t n, const T& val = T()):graph_base<T, Edge>(n, val){ }
 
         graph(const initializer_list<T> &inp):graph_base<T, Edge>(){
             for(auto &it : inp){
