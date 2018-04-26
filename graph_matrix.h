@@ -259,7 +259,9 @@ namespace graphmatrix{
         unordered_graph(uint32_t n):unordered_graph_base<T, Edge>(n) { }
         unordered_graph(const initializer_list<T> &inp):unordered_graph_base<T, Edge>(inp) { }
         unordered_graph(const unordered_graph &val):unordered_graph_base<T, Edge>(val) { }
-        unordered_graph(const unordered_graph &&val):unordered_graph_base<T, Edge>(move(val)) { *val = nullptr; }
+        unordered_graph(const unordered_graph &&val):unordered_graph_base<T, Edge>(move(val)) { }
+        unordered_graph& operator= (const unordered_graph &val) = default;
+        unordered_graph& operator= (unordered_graph &&val) = default;        
         vertex<T, Edge> operator[](uint32_t i){
             auto upd = [](const T& oldval, const T& newval){ };
             return unordered_graph_base<T, Edge>::get_vertex(i, upd);
