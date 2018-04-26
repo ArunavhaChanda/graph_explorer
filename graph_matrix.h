@@ -42,7 +42,9 @@ namespace graphmatrix{
         size_t n;
     public:
         const T& val;
-        vertex(T& rval, function<void(const T&,const T&)> u, unordered_map<uint32_t, Edge> &radj, size_t nn):n{nn}, adj{radj}, update{u}, val{rval}, _val{rval}{}
+        vertex(T& rval, function<void(const T&,const T&)> u, 
+            unordered_map<uint32_t, Edge> &radj, size_t nn):
+                n{nn}, adj{radj}, update{u}, val{rval}, _val{rval}{}
         void operator =(const T& newval){
             update(val, newval);
             _val = newval;
