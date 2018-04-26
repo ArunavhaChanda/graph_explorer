@@ -132,7 +132,7 @@ namespace graphmatrix{
             node.reserve(n);
         }
 
-        const vector<T> &nodes() const{
+        const vector<T>& nodes() const{
             return node;
         }
 
@@ -204,6 +204,7 @@ namespace graphmatrix{
         }
 
         vertex<T, Edge> operator[](uint32_t i){
+            if(i >= this->size()) throw vertex_out_of_range_error();
             auto upd = [&](const T& oldval, const T& newval){
                 if(!(oldval == newval)){
                     if(auto t = this->get_index(newval)) throw duplicate_vertex_error();
@@ -239,6 +240,7 @@ namespace graphmatrix{
         }
 
         vertex<T, Edge> operator[](uint32_t i){
+            if(i >= this->size()) throw vertex_out_of_range_error();
             auto &lookup = this->lookup;
             auto upd = [i, &lookup](const T& oldval, const T& newval){
                 if(!(oldval == newval)){
