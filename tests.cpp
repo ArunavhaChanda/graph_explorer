@@ -23,8 +23,15 @@ struct node{
     }
 };
 
+graph<int, int> getgraph(){
+    auto t = graph<int, int>();
+    return t;
+}
+
 int main(){
-    unordered_graph<node, int> g12;
+    unordered_graph<node, double> g12;
+    auto t = getgraph();
+    t.push_back(55);
     graph<node, int> g122;
     g122.push_back(node(1,2));
     g122.push_back(node(2,2));

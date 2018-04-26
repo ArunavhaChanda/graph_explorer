@@ -84,14 +84,13 @@ namespace graphmatrix{
             adj(val.adj)  
             {}
 
-        //copy assignment
-        unordered_graph_base& operator= (const unordered_graph_base<T, Edge> &val){
-            if (this != &val)  {            
-                node = val.node;  
-                adj = val.adj;
-            }  
-            return *this;  
-        }  
+        unordered_graph_base(unordered_graph_base<T, Edge> &&val):
+            node(move(val.node)),
+            adj(move(val.adj))
+            {}
+
+        unordered_graph_base& operator= (const unordered_graph_base<T, Edge> &val) = default;
+        unordered_graph_base& operator= (unordered_graph_base<T, Edge> &&val) = default;
 
         virtual vertex<T, Edge> operator[](uint32_t i) = 0;
 
@@ -144,6 +143,12 @@ namespace graphmatrix{
         graph_base(): unordered_graph_base<T, Edge>() { }
         
         graph_base(uint32_t n) : unordered_graph_base<T, Edge>(n){ }
+        graph_base(const graph_base &val):unordered_graph_base<T, Edge>(val){}
+        graph_base(graph_base &&val):unordered_graph_base<T, Edge>(move(val)){}
+
+        graph_base& operator= (const graph_base<T, Edge> &val) = default;
+        graph_base& operator= (graph_base<T, Edge> &&val) = default;
+
     public:
         int count(T& val){
             if(auto t = get_index(val)) return 1;
@@ -172,6 +177,12 @@ namespace graphmatrix{
                 unordered_graph_base<T, Edge>::push_back(it);
             }
         }
+
+        graph(const graph &val):graph_base<T, Edge>(val){}
+        graph(graph &&val):graph_base<T, Edge>(val){}
+
+        graph& operator= (const graph<T, Edge> &val) = default;
+        graph& operator= (graph<T, Edge> &&val) = default;
 
         optional<uint32_t> get_index(const T& val){
             auto &node = unordered_graph_base<T, Edge>::nodes();
@@ -211,16 +222,11 @@ namespace graphmatrix{
             }
         }
 
-        graph(graph &val):graph_base<T, Edge>(val),lookup{val.lookup}{}
+        graph(const graph &val):lookup{val.lookup},graph_base<T, Edge>(val){}
+        graph(graph &&val):lookup{move(val.lookup)},graph_base<T, Edge>(move(val)){}
 
-        //copy assignment
-        graph& operator= (const graph &val){
-            if (this != &val)  {            
-                *this = val;
-                lookup = val.lookup;
-            }
-            return *this;  
-        }  
+        graph& operator= (const graph &val) = default;
+        graph& operator= (graph &&val) = default;
 
         uint32_t push_back(const T &t){
             if(lookup.count(t) == 0) return lookup[t] = unordered_graph_base<T, Edge>::push_back(t);
@@ -253,7 +259,7 @@ namespace graphmatrix{
         unordered_graph(uint32_t n):unordered_graph_base<T, Edge>(n) { }
         unordered_graph(const initializer_list<T> &inp):unordered_graph_base<T, Edge>(inp) { }
         unordered_graph(const unordered_graph &val):unordered_graph_base<T, Edge>(val) { }
-        unordered_graph(const unordered_graph &&val):unordered_graph_base<T, Edge>(val) { *val = nullptr; }
+        unordered_graph(const unordered_graph &&val):unordered_graph_base<T, Edge>(move(val)) { *val = nullptr; }
         vertex<T, Edge> operator[](uint32_t i){
             auto upd = [](const T& oldval, const T& newval){ };
             return unordered_graph_base<T, Edge>::get_vertex(i, upd);
