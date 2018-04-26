@@ -64,8 +64,8 @@ namespace graphmatrix{
     protected:
         unordered_graph_base() { }
         
-        unordered_graph_base(uint32_t n){
-            node.resize(n);
+        unordered_graph_base(uint32_t n, const T& val){
+            node.resize(n, val);
         }
 
         unordered_graph_base(const initializer_list<T> &inp){
@@ -142,7 +142,7 @@ namespace graphmatrix{
     protected:
         graph_base(): unordered_graph_base<T, Edge>() { }
         
-        graph_base(uint32_t n) : unordered_graph_base<T, Edge>(n){ }
+        graph_base(uint32_t n, const T& val) : unordered_graph_base<T, Edge>(n, val){ }
         graph_base(const graph_base &val):unordered_graph_base<T, Edge>(val){}
         graph_base(graph_base &&val):unordered_graph_base<T, Edge>(move(val)){}
 
@@ -169,7 +169,7 @@ namespace graphmatrix{
     public:
         graph():graph_base<T, Edge>() { }
 
-        graph(uint32_t n):graph_base<T, Edge>(n){ }
+        graph(uint32_t n, const T&val = T()):graph_base<T, Edge>(n, val){ }
 
         graph(const initializer_list<T> &inp):graph_base<T, Edge>(){
             for(auto &it : inp){
@@ -213,7 +213,7 @@ namespace graphmatrix{
     public:
         graph():graph_base<T, Edge>(){ }
 
-        graph(uint32_t n):graph_base<T, Edge>(n){ }
+        graph(uint32_t n, const T& val = T()):graph_base<T, Edge>(n, val){ }
 
         graph(const initializer_list<T> &inp):graph_base<T, Edge>(){
             for(auto &it : inp){
@@ -256,7 +256,7 @@ namespace graphmatrix{
     class unordered_graph : public unordered_graph_base<T, Edge> {
     public:
         unordered_graph():unordered_graph_base<T, Edge>() { }
-        unordered_graph(uint32_t n):unordered_graph_base<T, Edge>(n) { }
+        unordered_graph(uint32_t n, const T& val = T()):unordered_graph_base<T, Edge>(n, val) { }
         unordered_graph(const initializer_list<T> &inp):unordered_graph_base<T, Edge>(inp) { }
         unordered_graph(const unordered_graph &val):unordered_graph_base<T, Edge>(val) { }
         unordered_graph(const unordered_graph &&val):unordered_graph_base<T, Edge>(move(val)) { }
