@@ -23,8 +23,18 @@ struct node{
     }
 };
 
+graph<int, int> getgraph(){
+    auto t = graph<int, int>();
+    return t;
+}
+
 int main(){
-    unordered_graph<node, int> g12;
+    unordered_graph<node, double> g12;
+    cout << g12.size() << ' ' << g12.nodes().capacity() << '\n';
+    g12.push_back(node(45,45));
+    cout << g12.size() << ' ' << g12.nodes().capacity() << '\n';
+    auto t = getgraph();
+    t.push_back(55);
     graph<node, int> g122;
     g122.push_back(node(1,2));
     g122.push_back(node(2,2));
@@ -66,14 +76,15 @@ int main(){
     for(auto &p : g3[0]) cout << g3[p.first].val << ' ' << p.second << endl;
 
     int n = 10;
-    graph<int, int> g(n); 
-    for(int i=0;i<n;i++) g[i] = i; // assigning values to vertices.
+    graph<int, int> g; 
+    for(int i=0;i<n;i++) g.push_back(i); // assigning values to vertices.
+    cout << "Size of g::" << g.size() << endl;
 
     vector<vector<int>> edges{{0,1,2},{1,2,3},{0,2,10},{2,3,1}};
 
     // Signature: g.add_edge(src_vertex_index, target_vertex_index, weight);
     for(auto &edge : edges) g.add_edge(edge[0], edge[1], edge[2]);
-    cout << "Max flow between vertex 0 and 2 is " << max_flow(g, 0, 2) << '\n';
+    cout << "Max flow between vertex 0 and 2 is " << max_flow(g, 0, 2) << endl;
 
     // another type of graph
     graph<string, long long> gg2; // an empty graph.
@@ -84,6 +95,7 @@ int main(){
 
     graph<string,long long> gll = gg2;
     graph<string, long long> g2(gll);
+    cout << gg2.size() << ' ' << gll.size() << ' ' << g2.size() << endl;
 
     if(auto index = g2.get_index("newyork"))
         cout << "index of newyork: " << *index << endl;
