@@ -1,0 +1,218 @@
+FOR 10086 EDGES:
+Graph init time for graph_explorer is: 0.054762s
+time for dfs of all nodes is: 0.000229s
+topological order exists
+top-sort time for graph_explorer is: 0.003611s
+Graph init time for boost is: 0.018198s
+A topological ordering exists
+top-sort time for boost is: 0.002495s
+
+
+FOR 20186 EDGES:
+Graph init time for graph_explorer is: 0.090738s
+time for dfs of all nodes is: 0.000608s
+topological order exists
+top-sort time for graph_explorer is: 0.006588s
+Graph init time for boost is: 0.035584s
+A topological ordering exists
+top-sort time for boost is: 0.006035s
+
+
+FOR 50674 EDGES:
+Graph init time for graph_explorer is: 0.248409s
+time for dfs of all nodes is: 0.001407s
+topological order exists
+top-sort time for graph_explorer is: 0.019498s
+Graph init time for boost is: 0.117047s
+A topological ordering exists
+top-sort time for boost is: 0.012267s
+
+
+FOR 101885 EDGES:
+Graph init time for graph_explorer is: 0.553713s
+time for dfs of all nodes is: 0.003195s
+topological order exists
+top-sort time for graph_explorer is: 0.041385s
+Graph init time for boost is: 0.254081s
+A topological ordering exists
+top-sort time for boost is: 0.024246s
+
+
+FOR 252350 EDGES:
+Graph init time for graph_explorer is: 1.45723s
+time for dfs of all nodes is: 0.009693s
+topological order exists
+top-sort time for graph_explorer is: 0.108769s
+Graph init time for boost is: 0.671785s
+A topological ordering exists
+top-sort time for boost is: 0.056131s
+
+
+FOR 506701 EDGES:
+Graph init time for graph_explorer is: 2.7212s
+time for dfs of all nodes is: 0.019326s
+topological order exists
+top-sort time for graph_explorer is: 0.214611s
+Graph init time for boost is: 1.44085s
+A topological ordering exists
+top-sort time for boost is: 0.100314s
+
+
+FOR 758299 EDGES:
+Graph init time for graph_explorer is: 4.16985s
+time for dfs of all nodes is: 0.021434s
+topological order exists
+top-sort time for graph_explorer is: 0.236589s
+Graph init time for boost is: 1.85509s
+A topological ordering exists
+top-sort time for boost is: 0.104874s
+
+
+FOR 1023211 EDGES:
+Graph init time for graph_explorer is: 5.60448s
+time for dfs of all nodes is: 0.0311s
+topological order exists
+top-sort time for graph_explorer is: 0.38234s
+Graph init time for boost is: 3.11761s
+A topological ordering exists
+top-sort time for boost is: 0.159884s
+
+
+FOR 10086 EDGES:
+Graph init time for graph_explorer is: 2.21374s
+topological order exists
+top-sort time for graph_explorer is: 0.00286s
+Graph init time for boost is: 1.1348s
+A topological ordering exists
+top-sort time for boost is: 0.002296s
+
+
+FOR 20186 EDGES:
+Graph init time for graph_explorer is: 9.03346s
+topological order exists
+top-sort time for graph_explorer is: 0.007186s
+Graph init time for boost is: 4.56337s
+A topological ordering exists
+top-sort time for boost is: 0.005391s
+
+
+FOR 50674 EDGES:
+Graph init time for graph_explorer is: 51.4138s
+topological order exists
+top-sort time for graph_explorer is: 0.014736s
+Graph init time for boost is: 27.6801s
+A topological ordering exists
+top-sort time for boost is: 0.010627s
+
+
+FOR 101885 EDGES:
+Graph init time for graph_explorer is: 197.019s
+topological order exists
+top-sort time for graph_explorer is: 0.034986s
+Graph init time for boost is: 105.005s
+A topological ordering exists
+top-sort time for boost is: 0.019638s
+
+
+FOR 252350 EDGES:
+Graph init time for graph_explorer is: 956.324s
+topological order exists
+top-sort time for graph_explorer is: 0.104495s
+Graph init time for boost is: 564.706s
+A topological ordering exists
+top-sort time for boost is: 0.043892s
+
+
+FOR 506701 EDGES:
+Graph init time for graph_explorer is: 2955.1s
+topological order exists
+top-sort time for graph_explorer is: 0.254128s
+Graph init time for boost is: 1900.8s
+A topological ordering exists
+top-sort time for boost is: 0.10902s
+
+
+FOR 758299 EDGES:
+Graph init time for graph_explorer is: 5670.74s
+topological order exists
+top-sort time for graph_explorer is: 0.333365s
+Graph init time for boost is: 3609.16s
+A topological ordering exists
+top-sort time for boost is: 0.14015s
+
+
+FOR 1023211 EDGES:
+Graph init time for graph_explorer is: 6993.31s
+topological order exists
+top-sort time for graph_explorer is: 0.337817s
+Graph init time for boost is: 4973.54s
+A topological ordering exists
+top-sort time for boost is: 0.125369s
+topological order exists
+MATH1201
+IEOR3658
+CSEE4119
+ELEN3801
+ENGI1102
+ELEN3084
+ELEN1201
+ELEN3201
+ELEN3331
+ELEN3081
+ELEN3083
+ENGI1006
+CSEE3827
+ELEN3082
+CSEE4824
+CSEE4823
+CSEE4840
+EECS4321
+COMS3203
+COMS1004
+COMS3134
+COMS3261
+COMS4115
+COMS3157
+CSEE4868
+COMS4118
+
+top-sort time for graph_explorer is: 0.024ms
+A topological ordering exists
+top-sort time for boost is: 0.333ms
+MATH1201
+IEOR3658
+CSEE4119
+ELEN3801
+ENGI1102
+ELEN3084
+ELEN1201
+ELEN3201
+ELEN3331
+ELEN3081
+ELEN3083
+ENGI1006
+CSEE3827
+ELEN3082
+CSEE4824
+CSEE4823
+CSEE4840
+EECS4321
+COMS3203
+COMS1004
+COMS3134
+COMS3261
+COMS4115
+COMS3157
+CSEE4868
+COMS4118
+
+
+
+ ----- MAX FLOW -----Graph init time for graph_explorer is: 33.1302s
+max-flow time for graph_explorer is: 1024.18s
+Max flow here is 34669
+Graph init time for boost is: 0.323037s
+max-flow time for boost is: 188.391s
+c  The total flow:
+s 34669
+
