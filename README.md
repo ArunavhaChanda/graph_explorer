@@ -5,6 +5,6 @@ Use -fconcepts flag while compilin since concepts are in use as well
 
 to compile using gcc:
 
-`g++ -std=c++17 -fconcepts tests.cpp`
+`g++ -std=c++17 -fconcepts <your_filename>.cpp`
 
 To compile using makefile, replace the "INCLUDES = -I/usr/local/Cellar/boost/1.67.0_1/include/" line with whichever directory you have boost in to make sure include finds it there.
