@@ -1,5 +1,5 @@
-CC  = /usr/local/Cellar/gcc/7.3.0_1/bin/g++-7
-CXX = /usr/local/Cellar/gcc/7.3.0_1/bin/g++-7
+CC  = gcc
+CXX = g++
 
 INCLUDES = -I/usr/local/Cellar/boost/1.67.0_1/include/
 
